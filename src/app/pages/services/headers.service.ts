@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { GLOBAL } from './GLOBAL';
 
 @Injectable({
   providedIn: 'root'
@@ -7,6 +8,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class HeaderService {
 
   httpOptions: any;
+  url = GLOBAL.url;
 
   constructor(public http: HttpClient) {
     this.getToken();

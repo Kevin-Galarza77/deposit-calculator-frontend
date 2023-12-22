@@ -47,6 +47,7 @@ export default class LoginComponent implements OnDestroy {
           this.userData.saveEmail(result.data.user);
           this.userData.saveUser(result.data.name);
           this.userData.saveRol(String(result.data.rol));
+          localStorage.setItem('token', result.data.token);
           this.router.navigateByUrl('/home');
         }
         this.spinner.hide();
