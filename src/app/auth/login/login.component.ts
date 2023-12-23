@@ -4,13 +4,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { UserDataService } from '../../pages/services/Encrypt/user-data.service';
+import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { HeaderService } from '../../pages/services/headers.service';
 import { Subscription } from 'rxjs';
 import { LoginService } from '../services/login.service';
-import { UserDataService } from '../../pages/services/Encrypt/user-data.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +29,7 @@ export default class LoginComponent implements OnDestroy {
   loginSubscription !: Subscription;
 
   constructor(
+    private headerService: HeaderService,
     private spinner: NgxSpinnerService,
     private loginService: LoginService,
     private userData: UserDataService,
@@ -49,6 +52,9 @@ export default class LoginComponent implements OnDestroy {
           this.userData.saveRol(String(result.data.rol));
           localStorage.setItem('token', result.data.token);
           this.router.navigateByUrl('/home');
+          this.headerService.getToken();
+        } else {
+          Swal.fire({ icon: "error", title: result.alert, confirmButtonColor: 'red' });
         }
         this.spinner.hide();
       },
