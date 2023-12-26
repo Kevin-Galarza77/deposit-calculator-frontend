@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [DataTablesModule,MatIconModule],
+  imports: [DataTablesModule, MatIconModule],
   templateUrl: './table.component.html',
   styleUrl: './table.component.css'
 })
@@ -22,15 +22,21 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() columnNames: any = [];
   @Input() valuesColumn: any = [];
   @Input() new: any = [];
+  @Input() keyIF: string = '';
+  @Input() valueIF: string = '';
+  @Input() onlyUpdate: boolean = true;
 
+
+  @Output() newEventEmitter = new EventEmitter();
   @Output() updateEventEmitter = new EventEmitter();
+  @Output() showEventEmitter = new EventEmitter();
 
   ngOnInit(): void {
     this.dtOptions = {
       language: {
         url: 'assets/i18n/Spanish.json'
       },
-      lengthMenu: [5, 15, 25, 30, 50],
+      lengthMenu: [10, 20, 30, 40, 50],
       dom: 'iftlp'
     };
   }
@@ -44,6 +50,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   rerender(data: any): void {
+    console.log(data);
     this.data = data;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.destroy();
@@ -51,8 +58,16 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  newElement() {
+    this.newEventEmitter.emit(null);
+  }
+
   updateElement(element: any) {
     this.updateEventEmitter.emit(element);
+  }
+
+  showElement(element: any) {
+    this.showEventEmitter.emit(element);
   }
 
 }

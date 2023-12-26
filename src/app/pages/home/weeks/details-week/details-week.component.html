@@ -1,0 +1,79 @@
+<main class="container-fluid mt-3">
+
+    @if (week_info.week_id) {
+    <h1 class="w-100 text-center">{{ week_info.week_date | date: 'EEEE, MMMM d, y' | titlecase }}</h1>
+    <mat-divider class="w-100 mb-3"></mat-divider>
+    }@else {
+    <div class="container mt-5">
+        <div class="alert alert-danger text-center" role="alert">
+            <strong>No se ha encontrado la información</strong>
+        </div>
+    </div>
+    }
+
+    <div class="container-fluid table-scroll shadow-lg p-3 w-100">
+        <div class="d-flex w-100 justify-content-end align-items-center mb-4">
+            <button class="btn btn-success px-5 d-flex justify-content-center align-items-center">
+                <mat-icon class="mx-2">library_add</mat-icon> Detalle
+            </button>
+        </div>
+        <table class="table table-hover">
+            <thead class="text-table table-secondary fs-6">
+                <tr>
+                    <th>MODIFICAR</th>
+                    <th>PRODUCTO</th>
+                    <th>CANTIDAD</th>
+                    <th>PRECIO COMPRA</th>
+                    <th>PRECIO VENTA</th>
+                    <th>GANANCIA</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody class="fs-6">
+                @for(week_detail of week_info.week_details; track week_detail.week_detail_id){
+                <tr>
+                    <td>
+                        <button class="btn btn-success text-table text-light link-dark m-2">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                    <td> {{ week_detail.week_detail_product_name }} </td>
+                    <td> x{{ week_detail.week_detail_quantity }} </td>
+                    <td> ${{ week_detail.week_detail_product_purchase_price | number:'1.2-2' }} </td>
+                    <td> ${{ week_detail.week_detail_product_sale_price | number:'1.2-2' }} </td>
+                    <td> ${{ week_detail.profit | number:'1.2-2' }} </td>
+                    <td> ${{ week_detail.total | number:'1.2-2' }} </td>
+                </tr>
+                }
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="fw-bolder fs-5">TOTAL GANANCIAS</td>
+                    <td class="fs-5 fw-bolder"> ${{ week_info.total_profits | number:'1.2-2'}} </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class=" fw-bolder fs-5 ">TOTAL</td>
+                    <td></td>
+                    <td class="fs-5 fw-bolder "> ${{ week_info.total_all | number:'1.2-2'}} </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class=" fw-bolder fs-5 ">A PAGAR CARGA</td>
+                    <td></td>
+                    <td class="fs-5 fw-bolder "> ${{ week_info.burden | number:'1.2-2'}} </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</main>

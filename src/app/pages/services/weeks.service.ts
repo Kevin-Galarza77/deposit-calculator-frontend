@@ -13,4 +13,9 @@ export class WeeksService {
     return this.headers.http.get(`${this.headers.url}week/AllWeeks`, this.headers.httpOptions);
   }
 
+
+  createWeek(week: any): Observable<any> {
+    return this.headers.http.post(`${this.headers.url}week`, week, this.headers.httpOptions);
+  }
+
 }

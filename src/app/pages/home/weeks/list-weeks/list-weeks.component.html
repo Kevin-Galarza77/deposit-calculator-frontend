@@ -2,6 +2,6 @@
     <h1 class="w-100 text-center">LISTADO DE SEMANAS</h1>
     <mat-divider class="w-100 mb-3"></mat-divider>
 
-    <app-table [columnNames]="['Fecha','$ Vendido','$ Carga','$ Ganancias']" [new]="'Registro'" [valuesColumn]="['week_date','total_sold','total_load','profits']"></app-table>
+    <app-table (newEventEmitter)="createWeek()" [columnNames]="['Fecha','$ Vendido','$ Carga','$ Ganancias']" [new]="'Registro'" [valuesColumn]="['week_date','total_sold','total_load','profits']" [keyIF]="'week_status'" [valueIF]="'1'" [onlyUpdate]="false"></app-table>
 
 </main>
