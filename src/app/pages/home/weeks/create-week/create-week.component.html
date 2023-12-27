@@ -1,16 +1,16 @@
-<form [formGroup]="week" (ngSubmit)="createWeek()" class="container-fluid p-3">
+<form [formGroup]="week" (ngSubmit)="create_update_Week()" class="container-fluid p-3">
 
     <h3 class="text-danger w-100 text-center">{{ title }} </h3>
     <mat-divider class="w-100 my-3"></mat-divider>
 
     <div class="w-100 d-flex justify-content-center align-items-center flex-column">
         <label for="date" class="w-100 fw-bolder mb-2">FECHA</label>
-        <input (change)="updateDate($event)" type="date" class="w-100 form-control" formControlName="week_date" name="date" id="date" required>
+        <input (change)="updateDate($event)" [min]="today" type="date" class="w-100 form-control" formControlName="week_date" name="date" id="date" required>
     </div>
     <mat-divider class="w-100 my-3"></mat-divider>
     <div class="w-100 d-flex justify-content-around align-items-center flex-wrap mt-3 mb-2">
-        <button type="button" (click)="close()" class="btn btn-dark px-5">Cancelar</button>
-        <button type="submit" [disabled]="week.invalid" class="btn btn-success px-4">Crear Semana</button>
+        <button type="button" (click)="close()" class="btn btn-dark px-5 m-1">Cancelar</button>
+        <button type="submit" [disabled]="week.invalid" class="btn btn-success px-4 m-1">{{ section ? 'Crear Semana' : 'Actualizar Semana' }}</button>
     </div>
 
 </form>

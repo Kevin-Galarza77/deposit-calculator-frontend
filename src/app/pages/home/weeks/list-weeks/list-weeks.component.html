@@ -2,6 +2,40 @@
     <h1 class="w-100 text-center">LISTADO DE SEMANAS</h1>
     <mat-divider class="w-100 mb-3"></mat-divider>
 
-    <app-table (newEventEmitter)="createWeek()" [columnNames]="['Fecha','$ Vendido','$ Carga','$ Ganancias']" [new]="'Registro'" [valuesColumn]="['week_date','total_sold','total_load','profits']" [keyIF]="'week_status'" [valueIF]="'1'" [onlyUpdate]="false"></app-table>
+    <div class="container-fluid table-scroll shadow-lg p-3 w-100 py-5">
+        <table class="table table-hover">
+            <thead class="text-table table-secondary fs-6">
+                <tr>
+                    <th>ACCIONES</th>
+                    <th>ID SEMANA</th>
+                    <th>FECHA</th>
+                    <th>$ VENDIDO</th>
+                    <th>$ CARGA</th>
+                    <th>$ GANANCIAS</th>
+                </tr>
+            </thead>
+            <tbody class="fs-6">
+                @for (week of weeks; track week.week_id) {
+                <tr>
+                    <td>
+                        <button (click)="showWeek(week)" class="btn btn-success text-table text-light link-dark m-1">
+                            <mat-icon>edit</mat-icon>
+                        </button> @if (week.week_details.length === 0) {
+                        <button (click)="deleteWeek(week.week_id)" class="btn btn-danger text-table text-light link-dark m-1">
+                            <mat-icon>delete</mat-icon>
+                        </button> }
+                    </td>
+                    <td> {{ week.week_id }}</td>
+                    <td> {{ week.week_date | date: 'EEEE, MMMM d, y' | titlecase }}</td>
+                    <td>${{ week.sold | number:'1.2-2' }}</td>
+                    <td>${{ week.burden | number:'1.2-2' }}</td>
+                    <td>${{ week.profit | number:'1.2-2' }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
 
 </main>

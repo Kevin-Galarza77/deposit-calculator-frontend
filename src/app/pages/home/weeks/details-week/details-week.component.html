@@ -1,8 +1,13 @@
 <main class="container-fluid mt-3">
 
     @if (week_info.week_id) {
-    <h1 class="w-100 text-center">{{ week_info.week_date | date: 'EEEE, MMMM d, y' | titlecase }}</h1>
+    <h1 class="w-100 text-center">{{ week_info.week_date | date: 'EEEE, MMMM d, y' | titlecase }} <button (click)="updateWeek()" class="btn btn-link p-0"><mat-icon>edit</mat-icon></button></h1>
     <mat-divider class="w-100 mb-3"></mat-divider>
+    <div class="d-flex w-100 justify-content-end align-items-center mb-3">
+        <button (click)="newDetailWeek()" class="btn btn-success px-5 d-flex justify-content-center align-items-center">
+            <mat-icon class="mx-2">library_add</mat-icon> Detalle
+        </button>
+    </div>
     }@else {
     <div class="container mt-5">
         <div class="alert alert-danger text-center" role="alert">
@@ -11,16 +16,11 @@
     </div>
     }
 
-    <div class="container-fluid table-scroll shadow-lg p-3 w-100">
-        <div class="d-flex w-100 justify-content-end align-items-center mb-4">
-            <button class="btn btn-success px-5 d-flex justify-content-center align-items-center">
-                <mat-icon class="mx-2">library_add</mat-icon> Detalle
-            </button>
-        </div>
+    <div class="container-fluid table-scroll shadow-lg p-3 w-100 py-5">
         <table class="table table-hover">
             <thead class="text-table table-secondary fs-6">
                 <tr>
-                    <th>MODIFICAR</th>
+                    <th>ACCIONES</th>
                     <th>PRODUCTO</th>
                     <th>CANTIDAD</th>
                     <th>PRECIO COMPRA</th>
@@ -33,8 +33,11 @@
                 @for(week_detail of week_info.week_details; track week_detail.week_detail_id){
                 <tr>
                     <td>
-                        <button class="btn btn-success text-table text-light link-dark m-2">
+                        <button (click)="updatelWeekDetail(week_detail)" class="m-1 btn btn-success text-table text-light link-dark m-2">
                             <mat-icon>edit</mat-icon>
+                        </button>
+                        <button (click)="deletelWeekDetail(week_detail.week_detail_id)" class="m-1 btn btn-danger text-table text-light link-dark m-2">
+                            <mat-icon>delete</mat-icon>
                         </button>
                     </td>
                     <td> {{ week_detail.week_detail_product_name }} </td>
@@ -51,7 +54,7 @@
                     <td></td>
                     <td></td>
                     <td class="fw-bolder fs-5">TOTAL GANANCIAS</td>
-                    <td class="fs-5 fw-bolder"> ${{ week_info.total_profits | number:'1.2-2'}} </td>
+                    <td class="fs-5 fw-bolder text-bg-secondary"> ${{ week_info.total_profits | number:'1.2-2'}} </td>
                     <td></td>
                 </tr>
                 <tr>
@@ -61,7 +64,7 @@
                     <td></td>
                     <td class=" fw-bolder fs-5 ">TOTAL</td>
                     <td></td>
-                    <td class="fs-5 fw-bolder "> ${{ week_info.total_all | number:'1.2-2'}} </td>
+                    <td class="fs-5 fw-bolder text-bg-secondary"> ${{ week_info.total_all | number:'1.2-2'}} </td>
                 </tr>
                 <tr>
                     <td></td>
@@ -70,7 +73,7 @@
                     <td></td>
                     <td class=" fw-bolder fs-5 ">A PAGAR CARGA</td>
                     <td></td>
-                    <td class="fs-5 fw-bolder "> ${{ week_info.burden | number:'1.2-2'}} </td>
+                    <td class="fs-5 fw-bolder text-bg-secondary"> ${{ week_info.burden | number:'1.2-2'}} </td>
                 </tr>
             </tbody>
         </table>

@@ -17,3 +17,7 @@ body {
 .table-scroll {
     overflow-x: auto;
 }
+
+.pointer {
+    cursor: pointer;
+}

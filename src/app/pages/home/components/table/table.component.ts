@@ -50,7 +50,6 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   rerender(data: any): void {
-    console.log(data);
     this.data = data;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.destroy();
