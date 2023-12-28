@@ -7,6 +7,7 @@ export const routes: Routes = [
             { path: 'products', title: 'Productos', loadComponent: () => import('./pages/home/products/list/list.component') },
             { path: 'weeks', title: 'Semanas', loadComponent: () => import('./pages/home/weeks/list-weeks/list-weeks.component') },
             { path: 'weeks/:id', title: 'Detalles de semana', loadComponent: () => import('./pages/home/weeks/details-week/details-week.component') },
+            { path: 'credits', title: 'Fiados - Personas', loadComponent: () => import('./pages/home/credits/list-people/list-people.component') }
         ]
     },
     { path: '**', redirectTo: 'login', pathMatch: 'full' },

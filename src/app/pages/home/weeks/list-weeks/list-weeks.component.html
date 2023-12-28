@@ -1,8 +1,12 @@
 <main class="container-fluid mt-3">
     <h1 class="w-100 text-center">LISTADO DE SEMANAS</h1>
     <mat-divider class="w-100 mb-3"></mat-divider>
-
-    <div class="container-fluid table-scroll shadow-lg p-3 w-100 py-5">
+    <div class="container-fluid table-scroll shadow-lg p-3 w-100 py-4">
+        <div class="w-100 d-flex justify-content-end align-items-center mb-4">
+            <button (click)="createWeek()" class="btn btn-success px-5 d-flex justify-content-center align-items-center">
+                <mat-icon class="mx-2">library_add</mat-icon> Semana
+            </button>
+        </div>
         <table class="table table-hover">
             <thead class="text-table table-secondary fs-6">
                 <tr>
@@ -34,8 +38,6 @@
                 }
             </tbody>
         </table>
-
     </div>
-
 
 </main>
