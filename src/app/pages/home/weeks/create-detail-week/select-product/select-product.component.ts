@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
   templateUrl: './select-product.component.html',
   styleUrl: './select-product.component.css'
 })
-export class SelectProductComponent implements OnInit,OnDestroy {
+export class SelectProductComponent implements OnInit, OnDestroy {
 
   products_filter: any[] = [];
   products: any[] = [];
@@ -30,6 +30,7 @@ export class SelectProductComponent implements OnInit,OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.allProducts?.unsubscribe();
     this.spinner.hide();
   }
 

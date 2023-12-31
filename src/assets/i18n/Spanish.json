@@ -188,8 +188,8 @@
             "submit": "Crear"
         },
         "edit": {
-            "button": "Editar",
-            "title": "Editar Registro",
+            "button": "Modificar",
+            "title": "Modificar Registro",
             "submit": "Actualizar"
         },
         "remove": {
@@ -206,7 +206,7 @@
         },
         "multi": {
             "title": "Múltiples Valores",
-            "info": "Los elementos seleccionados contienen diferentes valores para este registro. Para editar y establecer todos los elementos de este registro con el mismo valor, hacer click o tap aquí, de lo contrario conservarán sus valores individuales.",
+            "info": "Los elementos seleccionados contienen diferentes valores para este registro. Para modificar y establecer todos los elementos de este registro con el mismo valor, hacer click o tap aquí, de lo contrario conservarán sus valores individuales.",
             "restore": "Deshacer Cambios",
             "noMulti": "Este registro puede ser editado individualmente, pero no como parte de un grupo."
         }

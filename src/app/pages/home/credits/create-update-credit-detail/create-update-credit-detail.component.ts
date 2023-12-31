@@ -1,48 +1,51 @@
-import { DatePipe, TitleCasePipe } from '@angular/common';
-import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
+import { Component, Inject, OnDestroy } from '@angular/core';
+import { DatePipe, TitleCasePipe } from '@angular/common';
+import { SelectPersonComponent } from './select-person/select-person.component';
+import { CreditDetailService } from '../../../services/credit-detail.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { SelectProductComponent } from './select-product/select-product.component';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { WeekDetailsService } from '../../../services/week-details.service';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-create-detail-week',
+  selector: 'app-create-update-credit-detail',
   standalone: true,
-  imports: [ReactiveFormsModule, MatDividerModule, DatePipe, TitleCasePipe, MatFormFieldModule, MatInputModule],
-  templateUrl: './create-detail-week.component.html',
-  styleUrl: './create-detail-week.component.css'
+  imports: [ReactiveFormsModule, MatDividerModule, DatePipe, TitleCasePipe, MatFormFieldModule, MatInputModule, MatSelectModule],
+  templateUrl: './create-update-credit-detail.component.html',
+  styleUrl: './create-update-credit-detail.component.css'
 })
-export class CreateDetailWeekComponent implements OnDestroy {
+export class CreateUpdateCreditDetailComponent implements OnDestroy {
 
   detail: FormGroup = this.fb.group({
     id: [''],
-    product_id: ['', Validators.required],
     week_id: ['', Validators.required],
-    product_name: ['', Validators.required],
-    week_detail_quantity: ['', Validators.required]
+    credit_people_id: ['', Validators.required],
+    credit_people_name: ['', Validators.required],
+    credit_detail_description: ['', Validators.required],
+    credit_detail_value: ['', Validators.required],
+    credit_detail_status: [1]
   });
 
-  title: string = 'Nuevo Detalle';
+  title: string = 'Nuevo Fiado';
   date: string = new Date(this.data.date).toISOString().substring(0, 10);
   section = true;
 
   constructor(private fb: FormBuilder,
     private spinner: NgxSpinnerService,
-    private weekDetailsService: WeekDetailsService,
-    public dialogref: MatDialogRef<CreateDetailWeekComponent>,
+    private creditDetailService: CreditDetailService,
+    public dialogref: MatDialogRef<CreateUpdateCreditDetailComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog) {
-    if (!data.section) {
-      this.title = 'Modificar Detalle';
-      this.section = false;
-      this.detail.patchValue({ id: data.id, product_id: data.product_id, week_id: data.week, product_name: data.product_name, week_detail_quantity: data.week_detail_quantity });
-    } else {
+    if (data.section) {
       this.detail.patchValue({ week_id: data.week })
+    } else {
+      this.title = 'Modificar Fiado';
+      this.section = false;
+      this.detail.patchValue(this.data);
     }
   }
 
@@ -50,17 +53,17 @@ export class CreateDetailWeekComponent implements OnDestroy {
     this.spinner.hide();
   }
 
-  create_update_Detail() {
+  create_update_CreditDetail() {
     if (this.section) {
-      this.createDetail();
+      this.createCreditDetail();
     } else {
       this.updateDetail();
     }
   }
 
-  createDetail() {
+  createCreditDetail() {
     this.spinner.show();
-    this.weekDetailsService.createWeekDetail(this.detail.value).subscribe({
+    this.creditDetailService.createCreditDetail(this.detail.value).subscribe({
       next: result => {
         if (result.status) {
           Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
@@ -85,7 +88,7 @@ export class CreateDetailWeekComponent implements OnDestroy {
 
   updateDetail() {
     this.spinner.show();
-    this.weekDetailsService.updateWeekDetail(this.detail.value).subscribe({
+    this.creditDetailService.updateCreditDetail(this.detail.value).subscribe({
       next: result => {
         if (result.status) {
           Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
@@ -114,16 +117,16 @@ export class CreateDetailWeekComponent implements OnDestroy {
   }
 
   selectProduct() {
-    const select = this.dialog.open(SelectProductComponent, {
+    const select = this.dialog.open(SelectPersonComponent, {
       height: 'auto',
       maxHeight: '95vh',
       width: 'auto',
       minWidth: '350px',
-      data: { products_id: this.data.products_id }
+      data: { people_ids: this.data.people_ids }
     });
     select.afterClosed().subscribe(response => {
       if (response) {
-        this.detail.patchValue({ product_id: response.product_id, product_name: response.product_name });
+        this.detail.patchValue({ credit_people_id: response.credit_people_id, credit_people_name: response.credit_people_name });
       }
     });
   }

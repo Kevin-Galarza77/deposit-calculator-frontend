@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateDetailWeekComponent } from '../create-detail-week/create-detail-week.component';
 import { CreateWeekComponent } from '../create-week/create-week.component';
+import { CreateUpdateCreditDetailComponent } from '../../credits/create-update-credit-detail/create-update-credit-detail.component';
 @Component({
   selector: 'app-details-week',
   standalone: true,
@@ -85,17 +86,49 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     });
   }
 
+  createCreditDetail() {
+    const people_ids = this.week_info.credit_details.map((credit: any) => { return credit.credit_people_id });
+    const date = this.week_info.week_date;
+    const week = this.week_info.week_id;
+    const newCreditDetail = this.dialog.open(CreateUpdateCreditDetailComponent, {
+      height: 'auto',
+      maxHeight: '95vh',
+      width: 'auto',
+      minWidth: '350px',
+      data: { people_ids, week, date, section: true }
+    });
+    newCreditDetail.afterClosed().subscribe(response => {
+      if (response) this.getInformationWeek(this.week_id);
+    });
+  }
+
+  updateCreditDetail(detail: any) {
+    const people_ids = this.week_info.credit_details.map((credit: any) => { return credit.credit_people_id });
+    const date = this.week_info.week_date;
+    const week = this.week_info.week_id;
+    const update = this.dialog.open(CreateUpdateCreditDetailComponent, {
+      height: 'auto',
+      maxHeight: '95vh',
+      width: 'auto',
+      minWidth: '350px',
+      data: { people_ids, week, date, section: false, id: detail.credit_detail_id, credit_people_id: detail.credit_people.credit_people_id, credit_people_name: detail.credit_people.credit_people_name, credit_detail_description: detail.credit_detail_description, credit_detail_value: detail.credit_detail_value, week_id: detail.week_id,credit_detail_status:detail.credit_detail_status }
+    });
+    update.afterClosed().subscribe(response => {
+      if (response) this.getInformationWeek(this.week_id);
+    });
+  }
+
   updatelWeekDetail(detail: any) {
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
-    const createDetail = this.dialog.open(CreateDetailWeekComponent, {
+    const update = this.dialog.open(CreateDetailWeekComponent, {
       height: 'auto',
       maxHeight: '95vh',
       width: 'auto',
       minWidth: '350px',
       data: { section: false, date, week, id: detail.week_detail_id, product_name: detail.week_detail_product_name, product_id: detail.product_id, week_detail_quantity: detail.week_detail_quantity }
     });
-    createDetail.afterClosed().subscribe(response => {
+    update.afterClosed().subscribe(response => {
       if (response) this.getInformationWeek(this.week_id);
     });
   }

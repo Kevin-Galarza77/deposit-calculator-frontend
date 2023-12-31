@@ -8,15 +8,7 @@
             <mat-icon class="mx-2">library_add</mat-icon> Detalle
         </button>
     </div>
-    }@else {
-    <div class="container mt-5">
-        <div class="alert alert-danger text-center" role="alert">
-            <strong>No se ha encontrado la información</strong>
-        </div>
-    </div>
-    }
-
-    <div class="container-fluid table-scroll shadow-lg p-3 w-100 py-5">
+    <div class="container-fluid table-scroll shadow-lg px-3 w-100 py-5">
         <table class="table table-hover">
             <thead class="text-table table-secondary fs-6">
                 <tr>
@@ -78,5 +70,53 @@
             </tbody>
         </table>
     </div>
+    }@else {
+    <div class="container mt-5">
+        <div class="alert alert-danger text-center" role="alert">
+            <strong>No se ha encontrado la información</strong>
+        </div>
+    </div>
+    } @if (week_info.week_id){
+    <div class="d-flex w-100 justify-content-end align-items-center my-4">
+        <button (click)="createCreditDetail()" class="m-1 btn btn-success px-5 d-flex justify-content-center align-items-center">
+            <mat-icon class="mx-2">library_add</mat-icon> Fiado
 
+        </button>
+    </div>
+
+    <div class="container-fluid table-scroll shadow-lg px-3 w-100 py-5">
+        <table class="table table-hover">
+            <thead class="text-table table-secondary fs-6">
+                <tr>
+                    <th>ACCIONES</th>
+                    <th>PERSONA</th>
+                    <th>DESCRIPCIÓN</th>
+                    <th>FIADO</th>
+                    <th>ESTADO</th>
+                </tr>
+            </thead>
+            <tbody class="fs-6">
+                @for(week_detail of week_info.credit_details; track week_detail.credit_detail_id){
+                <tr>
+                    <td>
+                        <button (click)="updateCreditDetail(week_detail)" class="m-1 btn btn-success text-table text-light link-dark m-2">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                    <td> {{ week_detail.credit_people.credit_people_name }} </td>
+                    <td> {{ week_detail.credit_detail_description }} </td>
+                    <td> ${{ week_detail.credit_detail_value | number:'1.2-2' }} </td>
+                    @if (week_detail.credit_detail_status == 1) {
+                    <td class="text-danger fw-bolder text-decoration-underline"> PENDIENTE</td>
+                    }@else {
+                    <td class="text-success fw-bolder text-decoration-underline"> PAGADO</td>
+                    }
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="py-4"></div>
+    }
 </main>
