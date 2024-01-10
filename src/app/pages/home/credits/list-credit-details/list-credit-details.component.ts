@@ -1,12 +1,64 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { CreditPeopleService } from '../../../services/credit-people.service';
+import { MatIconModule } from '@angular/material/icon';
+import { DecimalPipe } from '@angular/common';
+import { DataTableDirective, DataTablesModule } from 'angular-datatables';
+import { Subject } from 'rxjs';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { CreateUpdateCreditDetailComponent } from '../create-update-credit-detail/create-update-credit-detail.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-list-credit-details',
   standalone: true,
-  imports: [],
+  imports: [MatDividerModule, MatIconModule, DecimalPipe, DataTablesModule],
   templateUrl: './list-credit-details.component.html',
   styleUrl: './list-credit-details.component.css'
 })
-export class ListCreditDetailsComponent {
+export default class ListCreditDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  @ViewChild(DataTableDirective, { static: false }) dtElement!: DataTableDirective;
+  dtTrigger: Subject<any> = new Subject<any>;
+  dtOptions: DataTables.Settings = {};
+
+  info: any = {};
+
+  person_id: any = this.router.snapshot.params['person'];
+
+  constructor(private creditPeopleService: CreditPeopleService,
+    private spinner: NgxSpinnerService,
+    private router: ActivatedRoute,
+  ) {
+
+  }
+
+  ngOnInit(): void {
+    this.dtOptions = {
+      language: {
+        url: 'assets/i18n/Spanish.json'
+      },
+      lengthMenu: [10, 20, 30, 40, 50],
+      dom: 'iftlp'
+    };
+    console.log(this.person_id);
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(this.dtOptions);
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
+    this.spinner.hide();
+  }
+
+  updateCreditDetail(detail: any) {
+    console.log(detail);
+  }
+
+  deletelWeekDetailCredit(detail: any) {
+    console.log(detail);
+  }
 
 }

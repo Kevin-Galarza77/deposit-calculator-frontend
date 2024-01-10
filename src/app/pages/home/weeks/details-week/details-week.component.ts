@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CreateDetailWeekComponent } from '../create-detail-week/create-detail-week.component';
 import { CreateWeekComponent } from '../create-week/create-week.component';
 import { CreateUpdateCreditDetailComponent } from '../../credits/create-update-credit-detail/create-update-credit-detail.component';
+import { CreditDetailService } from '../../../services/credit-detail.service';
 @Component({
   selector: 'app-details-week',
   standalone: true,
@@ -29,6 +30,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
   getWeekDetailSubscription!: Subscription;
 
   constructor(private weekDetailsService: WeekDetailsService,
+    private creditDetailService: CreditDetailService,
     private spinner: NgxSpinnerService,
     private router: ActivatedRoute,
     public dialog: MatDialog) { }
@@ -50,6 +52,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
           this.week_info = result.data;
           let total_profits = 0;
           let total_all = 0;
+          let total_all_credits = 0;
           this.week_info.week_details = this.week_info.week_details.map((detail: any) => {
             const profit = (detail.week_detail_product_sale_price - detail.week_detail_product_purchase_price) * detail.week_detail_quantity;
             const total = detail.week_detail_product_sale_price * detail.week_detail_quantity;
@@ -57,9 +60,15 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
             total_all += total;
             return { ...detail, profit, total };
           });
+          this.week_info.credit_details.forEach((credit: any) => {
+            if (credit.credit_detail_status == 1) total_all_credits += credit.credit_detail_value;
+          });
           this.week_info['total_profits'] = total_profits;
           this.week_info['total_all'] = total_all;
           this.week_info['burden'] = total_all - total_profits;
+          this.week_info['total_all_credits'] = total_all_credits;
+          this.week_info.week_details = this.week_info.week_details.sort((a: any, b: any) => b.total - a.total);
+          this.week_info.credit_details = this.week_info.credit_details.sort((a: any, b: any) => b.credit_detail_value - a.credit_detail_value).sort((a: any, b: any) => a.credit_detail_status - b.credit_detail_status);
         }
         this.spinner.hide();
       },
@@ -103,7 +112,6 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
   }
 
   updateCreditDetail(detail: any) {
-    const people_ids = this.week_info.credit_details.map((credit: any) => { return credit.credit_people_id });
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
     const update = this.dialog.open(CreateUpdateCreditDetailComponent, {
@@ -111,7 +119,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
       maxHeight: '95vh',
       width: 'auto',
       minWidth: '350px',
-      data: { people_ids, week, date, section: false, id: detail.credit_detail_id, credit_people_id: detail.credit_people.credit_people_id, credit_people_name: detail.credit_people.credit_people_name, credit_detail_description: detail.credit_detail_description, credit_detail_value: detail.credit_detail_value, week_id: detail.week_id,credit_detail_status:detail.credit_detail_status }
+      data: {  week, date, section: false, id: detail.credit_detail_id, credit_people_id: detail.credit_people.credit_people_id, credit_people_name: detail.credit_people.credit_people_name, credit_detail_description: detail.credit_detail_description, credit_detail_value: detail.credit_detail_value, week_id: detail.week_id, credit_detail_status: detail.credit_detail_status }
     });
     update.afterClosed().subscribe(response => {
       if (response) this.getInformationWeek(this.week_id);
@@ -183,6 +191,44 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     });
     updateWeek.afterClosed().subscribe(response => {
       if (response) this.getInformationWeek(this.week_id);
+    });
+  }
+  
+  deletelWeekDetailCredit(detail_id: any) {
+    Swal.fire({
+      title: "Estas seguro de realizar esta acción?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Eliminar",
+      confirmButtonColor: 'rgb(220, 53, 69)',
+      cancelButtonText: "Cancelar",
+      cancelButtonColor: 'rgb(108, 117, 125)',
+      reverseButtons: true
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.spinner.show();
+        this.creditDetailService.deleteCreditDetail(detail_id).subscribe({
+          next: result => {
+            if (result.status) {
+              Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+              setTimeout(() => this.getInformationWeek(this.week_id), 1000);
+            } else {
+              let html = '';
+              if (result.messages.length !== 0) {
+                result.messages.forEach((message: any) => {
+                  html += `<p> - ${message}</p>`
+                });
+              }
+              Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+            }
+            this.spinner.hide();
+          },
+          error: e => {
+            Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+            this.spinner.hide();
+          }
+        });
+      }
     });
   }
 

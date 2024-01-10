@@ -17,4 +17,8 @@ export class CreditDetailService {
     return this.headers.http.put(`${this.headers.url}credit-detail/${detail.id}`, detail, this.headers.httpOptions);
   }
 
+  deleteCreditDetail(detail: any): Observable<any> {
+    return this.headers.http.delete(`${this.headers.url}credit-detail/${detail}`, this.headers.httpOptions);
+  }
+
 }

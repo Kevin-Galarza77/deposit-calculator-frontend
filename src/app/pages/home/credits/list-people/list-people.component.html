@@ -25,7 +25,7 @@
                         </button>
                     </td>
                     <td> {{ person.credit_people_name }}</td>
-                    <td>${{ person.all_credit | number:'1.2-2' }}</td>
+                    <td (click)="saveToDetails(person)" class="text-danger text-decoration-underline cursor-pointer link-danger">${{ person.all_credit | number:'1.2-2' }}</td>
                 </tr>
                 }
             </tbody>

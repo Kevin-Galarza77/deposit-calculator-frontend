@@ -8,6 +8,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { CreditPeopleService } from '../../../services/credit-people.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateUpdatePeopleComponent } from '../create-update-people/create-update-people.component';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list-people',
@@ -19,15 +21,16 @@ import { CreateUpdatePeopleComponent } from '../create-update-people/create-upda
 export default class ListPeopleComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(DataTableDirective, { static: false }) dtElement!: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>;
+  dtOptions: DataTables.Settings = {};
 
   getAllPeopleSubscription!: Subscription;
   people: any[] = [];
 
-  constructor(private spinner: NgxSpinnerService,
+  constructor(private creditPeopleService: CreditPeopleService,
+    private spinner: NgxSpinnerService,
     public dialog: MatDialog,
-    private creditPeopleService: CreditPeopleService) { }
+    private router: Router) { }
 
 
   ngOnInit(): void {
@@ -58,10 +61,10 @@ export default class ListPeopleComponent implements OnInit, AfterViewInit, OnDes
         if (result.status) this.people = result.data.map((person: any) => {
           let all_credit = 0;
           person.credit_detail.forEach((detail: any) => {
-            all_credit += detail.credit_detail_value;
+            if (detail.credit_detail_status == 1) all_credit += detail.credit_detail_value;
           });
           return { ...person, all_credit }
-        });
+        }).sort((a: any, b: any) => b.all_credit - a.all_credit);
         this.rerender();
         this.spinner.hide();
       },
@@ -99,6 +102,14 @@ export default class ListPeopleComponent implements OnInit, AfterViewInit, OnDes
       dtInstance.destroy();
       this.dtTrigger.next(this.dtOptions);
     });
+  }
+
+  saveToDetails(creadits: any) {
+    if (creadits.credit_detail.length === 0) {
+      Swal.fire({ icon: "error", title: 'No existen fiados en esta persona', confirmButtonColor: 'red' });
+    } else {
+      this.router.navigateByUrl('/home/credits/'+creadits.credit_people_id);
+    }
   }
 
 }

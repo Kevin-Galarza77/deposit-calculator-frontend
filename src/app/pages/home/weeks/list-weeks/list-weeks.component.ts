@@ -3,22 +3,27 @@ import { TableComponent } from '../../components/table/table.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { WeeksService } from '../../../services/weeks.service';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateWeekComponent } from '../create-week/create-week.component';
 import { Router } from '@angular/router';
 import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
+import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 
 @Component({
   selector: 'app-list-weeks',
   standalone: true,
-  imports: [TableComponent, MatDividerModule, DatePipe, TitleCasePipe, MatIconModule, DecimalPipe],
+  imports: [TableComponent, MatDividerModule, DatePipe, TitleCasePipe, MatIconModule, DecimalPipe, DataTablesModule],
   templateUrl: './list-weeks.component.html',
   styleUrl: './list-weeks.component.css'
 })
-export default class ListWeeksComponent implements AfterViewInit, OnDestroy {
+export default class ListWeeksComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  @ViewChild(DataTableDirective, { static: false }) dtElement!: DataTableDirective;
+  dtTrigger: Subject<any> = new Subject<any>;
+  dtOptions: DataTables.Settings = {};
 
   getAllWeekSubscription!: Subscription;
 
@@ -29,11 +34,23 @@ export default class ListWeeksComponent implements AfterViewInit, OnDestroy {
     public dialog: MatDialog,
     private router: Router) { }
 
+  ngOnInit(): void {
+    this.dtOptions = {
+      language: {
+        url: 'assets/i18n/Spanish.json'
+      },
+      lengthMenu: [10, 20, 30, 40, 50],
+      dom: 'iftlp'
+    };
+  }
+
   ngAfterViewInit(): void {
+    this.dtTrigger.next(this.dtOptions);
     this.getAllWeeks();
   }
 
   ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
     this.getAllWeekSubscription?.unsubscribe();
     this.spinner.hide();
   }
@@ -45,14 +62,13 @@ export default class ListWeeksComponent implements AfterViewInit, OnDestroy {
         if (result.status) this.weeks = result.data.map((week: any) => {
           let sold = 0;
           let burden = 0;
-
           week.week_details.forEach((detail: any) => {
             sold += detail.week_detail_product_sale_price * detail.week_detail_quantity;
             burden += detail.week_detail_product_purchase_price * detail.week_detail_quantity;
           });
-
           return { ...week, sold, burden, profit: sold - burden }
         });
+        this.rerender();
         this.spinner.hide();
       },
       error: e => this.spinner.hide()
@@ -111,6 +127,13 @@ export default class ListWeeksComponent implements AfterViewInit, OnDestroy {
 
   showWeek(week: any) {
     this.router.navigateByUrl('/home/weeks/' + week.week_id);
+  }
+
+  rerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.destroy();
+      this.dtTrigger.next(this.dtOptions);
+    });
   }
 
 }

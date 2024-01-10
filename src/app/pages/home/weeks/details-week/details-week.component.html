@@ -8,7 +8,9 @@
             <mat-icon class="mx-2">library_add</mat-icon> Detalle
         </button>
     </div>
-    <div class="container-fluid table-scroll shadow-lg px-3 w-100 py-5">
+    <div class="container-fluid table-scroll shadow-lg px-3 w-100">
+        <h4 class="mt-3 fw-bolder">PRODUCTOS</h4>
+        <hr class="bg-dark">
         <table class="table table-hover">
             <thead class="text-table table-secondary fs-6">
                 <tr>
@@ -63,6 +65,15 @@
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td class=" fw-bolder fs-5 ">TOTAL - FIADOS</td>
+                    <td></td>
+                    <td class="fs-5 fw-bolder text-bg-secondary"> ${{ week_info.total_all - week_info.total_all_credits | number:'1.2-2'}} </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td class=" fw-bolder fs-5 ">A PAGAR CARGA</td>
                     <td></td>
                     <td class="fs-5 fw-bolder text-bg-secondary"> ${{ week_info.burden | number:'1.2-2'}} </td>
@@ -80,11 +91,12 @@
     <div class="d-flex w-100 justify-content-end align-items-center my-4">
         <button (click)="createCreditDetail()" class="m-1 btn btn-success px-5 d-flex justify-content-center align-items-center">
             <mat-icon class="mx-2">library_add</mat-icon> Fiado
-
         </button>
     </div>
 
-    <div class="container-fluid table-scroll shadow-lg px-3 w-100 py-5">
+    <div class="container-fluid table-scroll shadow-lg px-3 w-100 ">
+        <h4 class="mt-3 fw-bolder">FIADOS</h4>
+        <hr class="bg-dark">
         <table class="table table-hover">
             <thead class="text-table table-secondary fs-6">
                 <tr>
@@ -102,6 +114,9 @@
                         <button (click)="updateCreditDetail(week_detail)" class="m-1 btn btn-success text-table text-light link-dark m-2">
                             <mat-icon>edit</mat-icon>
                         </button>
+                        <button (click)="deletelWeekDetailCredit(week_detail.credit_detail_id)" class="m-1 btn btn-danger text-table text-light link-dark m-2">
+                            <mat-icon>delete</mat-icon>
+                        </button>
                     </td>
                     <td> {{ week_detail.credit_people.credit_people_name }} </td>
                     <td> {{ week_detail.credit_detail_description }} </td>
@@ -113,6 +128,13 @@
                     }
                 </tr>
                 }
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class=" fw-bolder fs-5 ">TOTAL</td>
+                    <td class="fs-5 fw-bolder text-bg-secondary"> ${{ week_info.total_all_credits | number:'1.2-2'}} </td>
+                    <td></td>
+                </tr>
             </tbody>
         </table>
     </div>
