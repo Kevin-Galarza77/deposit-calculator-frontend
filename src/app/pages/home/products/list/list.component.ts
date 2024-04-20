@@ -1,17 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CreateUpdateComponent } from '../create-update/create-update.component';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { ProductsService } from '../../../services/products.service';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { CurrencyPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateUpdateComponent } from '../create-update/create-update.component';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [MatDividerModule, CurrencyPipe],
+  imports: [MatDividerModule, DecimalPipe],
   templateUrl: './list.component.html',
   styleUrl: './list.component.css'
 })
@@ -24,8 +24,7 @@ export default class ListComponent implements OnInit, OnDestroy {
 
   constructor(private productsService: ProductsService,
     private spinner: NgxSpinnerService,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.getAllProducts();
@@ -40,7 +39,10 @@ export default class ListComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.allProducts = this.productsService.getAllProducts().subscribe({
       next: result => {
-        if (result.status) this.products = this.products_filter = result.data;
+        if (result.status) {
+          this.products = result.data;
+          this.products_filter = result.data;
+        }
         this.spinner.hide();
       },
       error: e => this.spinner.hide()
@@ -48,15 +50,14 @@ export default class ListComponent implements OnInit, OnDestroy {
   }
 
   filterProducts(input: any) {
-    const name = String(input.target.value).toLowerCase();
-    this.products = this.products_filter.filter(product => product.product_name.toLowerCase().includes(name));
+    this.products = this.products_filter.filter(product => product.product_name.toLowerCase().includes(input.target.value.toLowerCase()));
   }
 
   updateProduct(product?: any) {
     const updateProduct = this.dialog.open(CreateUpdateComponent, {
       height: 'auto',
       maxHeight: '95vh',
-      width: '50%',
+      width: '30%',
       minWidth: '300px',
       data: product
     });
@@ -65,7 +66,7 @@ export default class ListComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteProduct(product: any) {
+  deleteProductQuestion(product: any) {
     Swal.fire({
       title: "Estas seguro de realizar esta acción?",
       icon: "question",
@@ -76,29 +77,31 @@ export default class ListComponent implements OnInit, OnDestroy {
       cancelButtonColor: 'rgb(108, 117, 125)',
       reverseButtons: true
     }).then(result => {
-      if (result.isConfirmed) {
-        this.spinner.show();
-        this.productsService.deleteProduct(product).subscribe({
-          next: result => {
-            if (result.status) {
-              Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
-              setTimeout(() => this.getAllProducts(), 1000);
-            } else {
-              let html = '';
-              if (result.messages.length !== 0) {
-                result.messages.forEach((message: any) => {
-                  html += `<p> - ${message}</p>`
-                });
-              }
-              Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
-            }
-            this.spinner.hide();
-          },
-          error: e => {
-            Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
-            this.spinner.hide();
+      if (result.isConfirmed) this.deleteProduct(product);
+    });
+  }
+
+  deleteProduct(product: any) {
+    this.spinner.show();
+    this.productsService.deleteProduct(product).subscribe({
+      next: result => {
+        if (result.status) {
+          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          setTimeout(() => this.getAllProducts(), 1000);
+        } else {
+          let html = '';
+          if (result.messages.length !== 0) {
+            result.messages.forEach((message: any) => {
+              html += `<p> - ${message}</p>`
+            });
           }
-        });
+          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+        }
+        this.spinner.hide();
+      },
+      error: e => {
+        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.spinner.hide();
       }
     });
   }

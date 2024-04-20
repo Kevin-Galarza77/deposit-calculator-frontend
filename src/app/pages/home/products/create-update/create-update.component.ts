@@ -68,7 +68,7 @@ export class CreateUpdateComponent implements OnInit {
           let html = '';
           if (result.messages.length !== 0) {
             result.messages.forEach((message: any) => {
-              html += `<p> - ${message}</p>`
+              html += `<p>- ${message}</p>`
             });
           }
           Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
@@ -92,7 +92,7 @@ export class CreateUpdateComponent implements OnInit {
           let html = '';
           if (result.messages.length !== 0) {
             result.messages.forEach((message: any) => {
-              html += `<p> - ${message}</p>`
+              html += `<p>- ${message}</p>`
             });
           }
           Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
