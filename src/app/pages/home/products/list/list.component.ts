@@ -3,15 +3,16 @@ import { CreateUpdateComponent } from '../create-update/create-update.component'
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { ProductsService } from '../../../services/products.service';
-import { DecimalPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { Subscription } from 'rxjs';
+import { DecimalPipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [MatDividerModule, DecimalPipe],
+  imports: [MatDividerModule, MatIconModule, DecimalPipe],
   templateUrl: './list.component.html',
   styleUrl: './list.component.css'
 })

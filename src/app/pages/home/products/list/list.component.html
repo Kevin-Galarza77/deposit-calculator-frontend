@@ -28,8 +28,8 @@
                     <p class="p-0 m-0">${{ product.product_sale_price | number:'1.2-2' }}</p>
                 </div>
                 <div class="w-100 d-flex justify-content-around align-items-center flex-wrap mt-2">
-                    <button (click)="updateProduct(product)" class="btn btn-success m-1">Modificar</button>
-                    <button (click)="deleteProductQuestion(product)" class="btn btn-danger m-1">Eliminar</button>
+                    <button (click)="updateProduct(product)" class="btn btn-success m-1"><mat-icon>edit</mat-icon></button>
+                    <button (click)="deleteProductQuestion(product)" class="btn btn-danger m-1"><mat-icon>delete</mat-icon></button>
                 </div>
             </div>
         </div>
