@@ -1,18 +1,19 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { ProductsService } from '../../../services/products.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { ProductsService } from '../../../services/products.service';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
 
 
 @Component({
   selector: 'app-create-update',
   standalone: true,
-  imports: [MatDividerModule, ReactiveFormsModule, MatInputModule, MatFormFieldModule],
+  imports: [MatDividerModule, MatIconModule,ReactiveFormsModule, MatInputModule, MatFormFieldModule],
   templateUrl: './create-update.component.html',
   styleUrl: './create-update.component.css'
 })

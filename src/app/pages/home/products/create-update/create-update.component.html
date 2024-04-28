@@ -1,8 +1,8 @@
 <div class="container-fluid p-3">
 
-    <button (click)="close()" type="button" class="position-absolute top-0 end-0 m-2 btn btn-danger">X</button>
+    <button (click)="close()" type="button" class="position-absolute top-0 end-0 m-2 btn btn-danger border border-dark">X</button>
 
-    <h3 class="text-danger w-100 text-center">{{ title }} </h3>
+    <h3 class="text-danger w-100 text-center fw-bolder">{{ title }} </h3>
     <mat-divider class="w-100 mb-4"></mat-divider>
 
     <form [formGroup]="product" class="d-flex flex-column position-relative" (submit)="create_update_Product()">
@@ -28,7 +28,7 @@
         </mat-form-field>
 
         <div class="w-100 d-flex justify-content-center align-items-center">
-            <button type="submit" class="btn btn-success px-5">{{ section ? 'Guardar Producto' : 'Guardar Cambios' }}</button>
+            <button type="submit" class="btn btn-success px-5 d-flex justify-content-center align-items-center border border-dark"><mat-icon class="mx-1">save</mat-icon>{{ section ? 'Producto' : 'Guardar Cambios' }}</button>
         </div>
     </form>
 

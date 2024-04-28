@@ -1,7 +1,7 @@
 <main class="container-fluid mt-3">
 
     @if (week_info.week_id) {
-    <h1 class="w-100 text-center">{{ week_info.week_date | date: 'EEEE, MMMM d, y' | titlecase }} <button (click)="updateWeek()" class="btn btn-link p-0"><mat-icon>edit</mat-icon></button></h1>
+    <h1 class="w-100 text-center">{{ week_info.week_alias }} - {{ week_info.week_date | date: 'EEEE, d MMMM y' | uppercase }}<button (click)="updateWeek()" class="btn btn-link p-0"><mat-icon>edit</mat-icon></button></h1>
     <mat-divider class="w-100 mb-3"></mat-divider>
     <div class="d-flex w-100 justify-content-end align-items-center mb-3">
         <button (click)="newDetailWeek()" class="btn btn-success px-5 d-flex justify-content-center align-items-center">

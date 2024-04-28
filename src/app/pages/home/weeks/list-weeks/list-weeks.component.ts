@@ -79,8 +79,8 @@ export default class ListWeeksComponent implements OnInit, AfterViewInit, OnDest
     const createWeek = this.dialog.open(CreateWeekComponent, {
       height: 'auto',
       maxHeight: '95vh',
-      width: 'auto',
-      minWidth: '350px'
+      width: '25%',
+      minWidth: '300px'
     });
     createWeek.afterClosed().subscribe(response => {
       if (response) this.router.navigateByUrl('/home/weeks/' + response.week_id);

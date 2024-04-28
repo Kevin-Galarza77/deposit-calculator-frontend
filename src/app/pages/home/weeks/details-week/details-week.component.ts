@@ -1,22 +1,23 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDividerModule } from '@angular/material/divider';
-import { TableComponent } from '../../components/table/table.component';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { WeekDetailsService } from '../../../services/week-details.service';
-import { CurrencyPipe, DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
-import Swal from 'sweetalert2';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
+import { CurrencyPipe, DatePipe, DecimalPipe, UpperCasePipe } from '@angular/common';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CreateUpdateCreditDetailComponent } from '../../credits/create-update-credit-detail/create-update-credit-detail.component';
 import { CreateDetailWeekComponent } from '../create-detail-week/create-detail-week.component';
 import { CreateWeekComponent } from '../create-week/create-week.component';
-import { CreateUpdateCreditDetailComponent } from '../../credits/create-update-credit-detail/create-update-credit-detail.component';
 import { CreditDetailService } from '../../../services/credit-detail.service';
+import { WeekDetailsService } from '../../../services/week-details.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { TableComponent } from '../../components/table/table.component';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-details-week',
   standalone: true,
-  imports: [MatDividerModule, TableComponent, DatePipe, TitleCasePipe, DecimalPipe, MatIconModule, CurrencyPipe],
+  imports: [MatDividerModule, TableComponent, DatePipe, UpperCasePipe, DecimalPipe, MatIconModule, CurrencyPipe],
   templateUrl: './details-week.component.html',
   styleUrl: './details-week.component.css'
 })
@@ -119,7 +120,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
       maxHeight: '95vh',
       width: 'auto',
       minWidth: '350px',
-      data: {  week, date, section: false, id: detail.credit_detail_id, credit_people_id: detail.credit_people.credit_people_id, credit_people_name: detail.credit_people.credit_people_name, credit_detail_description: detail.credit_detail_description, credit_detail_value: detail.credit_detail_value, week_id: detail.week_id, credit_detail_status: detail.credit_detail_status }
+      data: { week, date, section: false, id: detail.credit_detail_id, credit_people_id: detail.credit_people.credit_people_id, credit_people_name: detail.credit_people.credit_people_name, credit_detail_description: detail.credit_detail_description, credit_detail_value: detail.credit_detail_value, week_id: detail.week_id, credit_detail_status: detail.credit_detail_status }
     });
     update.afterClosed().subscribe(response => {
       if (response) this.getInformationWeek(this.week_id);
@@ -180,20 +181,21 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
   }
 
   updateWeek() {
-    const week = this.week_info.week_id;
-    const date = this.week_info.week_date;
+    const week_id = this.week_info.week_id;
+    const week_date = this.week_info.week_date;
+    const week_alias = this.week_info.week_alias;
     const updateWeek = this.dialog.open(CreateWeekComponent, {
       height: 'auto',
       maxHeight: '95vh',
       width: 'auto',
       minWidth: '350px',
-      data: { week, date, section: false }
+      data: { week_id, week_date, week_alias, section: false }
     });
     updateWeek.afterClosed().subscribe(response => {
       if (response) this.getInformationWeek(this.week_id);
     });
   }
-  
+
   deletelWeekDetailCredit(detail_id: any) {
     Swal.fire({
       title: "Estas seguro de realizar esta acción?",

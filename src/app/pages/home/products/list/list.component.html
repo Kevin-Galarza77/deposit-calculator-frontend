@@ -1,5 +1,5 @@
 <main class="container-fluid mt-3">
-    <h1 class="w-100 text-center">PRODUCTOS</h1>
+    <h1 class="w-100 text-center fw-bolder">PRODUCTOS</h1>
     <mat-divider class="w-100 mb-3"></mat-divider>
     <div class="row align-items-start">
         <div class="col">
@@ -8,11 +8,11 @@
                 <label for="floatingInput">Buscar</label>
             </div>
         </div>
-        <div class="col text-end">
-            <button class="btn btn-success align-self-end" (click)="updateProduct()">Crear Producto</button>
+        <div class="col d-flex justify-content-end">
+            <button class="btn btn-success align-self-end d-flex justify-content-center align-items-center" (click)="updateProduct()"><mat-icon class="mx-1">library_add</mat-icon>Producto</button>
         </div>
     </div>
-    <div class="row flex-wrap">
+    <div class="row flex-wrap justify-content-center align-items-center">
 
         @for(product of products; track product.product_id){
         <div ngfor class="card m-4 shadow" style="width: 18rem;">
@@ -27,7 +27,7 @@
                     <p class="fw-bolder p-0 m-0">Precio Venta:</p>
                     <p class="p-0 m-0">${{ product.product_sale_price | number:'1.2-2' }}</p>
                 </div>
-                <div class="w-100 d-flex justify-content-around align-items-center flex-wrap mt-2">
+                <div class="w-100 d-flex justify-content-center align-items-center flex-wrap mt-2">
                     <button (click)="updateProduct(product)" class="btn btn-success m-1"><mat-icon>edit</mat-icon></button>
                     <button (click)="deleteProductQuestion(product)" class="btn btn-danger m-1"><mat-icon>delete</mat-icon></button>
                 </div>
@@ -35,4 +35,5 @@
         </div>
         }
     </div>
+
 </main>

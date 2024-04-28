@@ -1,9 +1,9 @@
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
@@ -17,36 +17,34 @@ import Swal from 'sweetalert2';
   templateUrl: './create-week.component.html',
   styleUrl: './create-week.component.css'
 })
-export class CreateWeekComponent implements OnInit,OnDestroy {
+export class CreateWeekComponent implements OnInit, OnDestroy {
 
   week: FormGroup = this.fb.group({
     week_id: [''],
-    week_date: ['', Validators.required]
+    week_date: ['', Validators.required],
+    week_alias: ['', Validators.required]
   });
 
-  title: string = 'Nueva Semana';
+  title: string = 'NUEVA SEMANA';
   section = true;
-  today!: any ;
+  today!: any;
 
   constructor(private fb: FormBuilder,
     private weeksService: WeeksService,
     private spinner: NgxSpinnerService,
     public dialogref: MatDialogRef<CreateWeekComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-    if (data) {
-      this.week.patchValue({ week_id: this.data.week });
-      this.section = false;
-      this.title = 'Modificar Semana';
-      this.week.patchValue({ week_date: this.data.date });
-    }else{
-      this.week.patchValue({ week_date: new Date().toISOString().substring(0, 10) });
-    }
-  }
-
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
-    this.today =  new Date();
-    this.today.setDate(this.today.getDate() -1);
+    this.today = new Date();
+    if (this.data) {
+      this.week.patchValue(this.data);
+      this.section = false;
+      this.title = 'MODIFICAR SEMANA';
+    } else {
+      this.week.patchValue({ week_date: this.today.toISOString().substring(0, 10) });
+    }
+    this.today.setDate(this.today.getDate() - 1);
     this.today = this.today.toISOString().substring(0, 10);
   }
 
@@ -55,8 +53,7 @@ export class CreateWeekComponent implements OnInit,OnDestroy {
   }
 
   updateDate(date: any) {
-    const selectedDay = new Date(date.target.value);
-    this.week.patchValue({ week_date: selectedDay.toISOString().substring(0, 10) });
+    this.week.patchValue({ week_date: new Date(date.target.value).toISOString().substring(0, 10) });
   }
 
   create_update_Week() {
