@@ -1,6 +1,9 @@
 <main class="container-fluid mt-3">
-    <h1 class="w-100 text-center">SEMANAS</h1>
+
+    <h1 class="w-100 text-center fw-bolder">SEMANAS</h1>
+
     <mat-divider class="w-100 mb-3"></mat-divider>
+
     <div class="container-fluid table-scroll shadow-lg p-3 w-100 py-4">
         <div class="w-100 d-flex justify-content-end align-items-center mb-4">
             <button (click)="createWeek()" class="m-1 btn btn-success px-5 d-flex justify-content-center align-items-center">
@@ -30,7 +33,7 @@
                         </button> }
                     </td>
                     <td> {{ week.week_alias }}</td>
-                    <td> {{ week.week_date | date: 'EEEE, d MMMM y' | titlecase }}</td>
+                    <td> {{ week.week_date | date: 'EEEE, d MMMM y' | uppercase }}</td>
                     <td>$ {{ week.sold | number:'1.2-2' }}</td>
                     <td>$ {{ week.burden | number:'1.2-2' }}</td>
                     <td>$ {{ week.profit | number:'1.2-2' }}</td>

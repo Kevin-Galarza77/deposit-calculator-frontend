@@ -9,8 +9,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { TableComponent } from '../../components/table/table.component';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
+import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 
@@ -27,6 +27,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
 
   week_id: any = this.router.snapshot.params['id'];
   week_info: any = {};
+  section: boolean = true;
 
   getWeekDetailSubscription!: Subscription;
 
@@ -45,7 +46,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     this.spinner.hide();
   }
 
-  getInformationWeek(week_id: any) {
+  getInformationWeek(week_id: any): void {
     this.spinner.show(); 9
     this.getWeekDetailSubscription = this.weekDetailsService.getAllWeekDetailsByWeek(week_id).subscribe({
       next: result => {
@@ -80,14 +81,14 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     });
   }
 
-  newDetailWeek() {
+  newDetailWeek(): void {
     const products_id = this.week_info.week_details.map((product: any) => { return product.product_id });
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
     const createDetail = this.dialog.open(CreateDetailWeekComponent, {
       height: 'auto',
       maxHeight: '95vh',
-      width: 'auto',
+      width: '30%',
       minWidth: '350px',
       data: { products_id, week, date, section: true }
     });
@@ -96,16 +97,12 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     });
   }
 
-  createCreditDetail() {
+  createCreditDetail(): void {
     const people_ids = this.week_info.credit_details.map((credit: any) => { return credit.credit_people_id });
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
     const newCreditDetail = this.dialog.open(CreateUpdateCreditDetailComponent, {
-      height: 'auto',
-      maxHeight: '95vh',
-      width: 'auto',
-      minWidth: '350px',
-      data: { people_ids, week, date, section: true }
+      height: 'auto', maxHeight: '95vh', width: 'auto', minWidth: '350px', data: { people_ids, week, date, section: true }
     });
     newCreditDetail.afterClosed().subscribe(response => {
       if (response) this.getInformationWeek(this.week_id);
@@ -116,10 +113,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
     const update = this.dialog.open(CreateUpdateCreditDetailComponent, {
-      height: 'auto',
-      maxHeight: '95vh',
-      width: 'auto',
-      minWidth: '350px',
+      height: 'auto', maxHeight: '95vh', width: 'auto', minWidth: '350px',
       data: { week, date, section: false, id: detail.credit_detail_id, credit_people_id: detail.credit_people.credit_people_id, credit_people_name: detail.credit_people.credit_people_name, credit_detail_description: detail.credit_detail_description, credit_detail_value: detail.credit_detail_value, week_id: detail.week_id, credit_detail_status: detail.credit_detail_status }
     });
     update.afterClosed().subscribe(response => {
@@ -131,10 +125,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
     const update = this.dialog.open(CreateDetailWeekComponent, {
-      height: 'auto',
-      maxHeight: '95vh',
-      width: 'auto',
-      minWidth: '350px',
+      height: 'auto', maxHeight: '95vh', width: '30%', minWidth: '350px',
       data: { section: false, date, week, id: detail.week_detail_id, product_name: detail.week_detail_product_name, product_id: detail.product_id, week_detail_quantity: detail.week_detail_quantity }
     });
     update.afterClosed().subscribe(response => {
@@ -144,14 +135,9 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
 
   deletelWeekDetail(detail_id: any) {
     Swal.fire({
-      title: "Estas seguro de realizar esta acción?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Eliminar",
-      confirmButtonColor: 'rgb(220, 53, 69)',
-      cancelButtonText: "Cancelar",
-      cancelButtonColor: 'rgb(108, 117, 125)',
-      reverseButtons: true
+      title: "Estas seguro de realizar esta acción?", icon: "question", showCancelButton: true,
+      confirmButtonText: "Eliminar", confirmButtonColor: 'rgb(220, 53, 69)', cancelButtonText: "Cancelar",
+      cancelButtonColor: 'rgb(108, 117, 125)', reverseButtons: true
     }).then(result => {
       if (result.isConfirmed) {
         this.spinner.show();
@@ -185,11 +171,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     const week_date = this.week_info.week_date;
     const week_alias = this.week_info.week_alias;
     const updateWeek = this.dialog.open(CreateWeekComponent, {
-      height: 'auto',
-      maxHeight: '95vh',
-      width: 'auto',
-      minWidth: '350px',
-      data: { week_id, week_date, week_alias, section: false }
+      height: 'auto', maxHeight: '95vh', width: 'auto', minWidth: '350px', data: { week_id, week_date, week_alias, section: false }
     });
     updateWeek.afterClosed().subscribe(response => {
       if (response) this.getInformationWeek(this.week_id);
@@ -198,14 +180,9 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
 
   deletelWeekDetailCredit(detail_id: any) {
     Swal.fire({
-      title: "Estas seguro de realizar esta acción?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Eliminar",
-      confirmButtonColor: 'rgb(220, 53, 69)',
-      cancelButtonText: "Cancelar",
-      cancelButtonColor: 'rgb(108, 117, 125)',
-      reverseButtons: true
+      title: "Estas seguro de realizar esta acción?", icon: "question", showCancelButton: true,
+      confirmButtonText: "Eliminar", confirmButtonColor: 'rgb(220, 53, 69)', cancelButtonText: "Cancelar",
+      cancelButtonColor: 'rgb(108, 117, 125)', reverseButtons: true
     }).then(result => {
       if (result.isConfirmed) {
         this.spinner.show();

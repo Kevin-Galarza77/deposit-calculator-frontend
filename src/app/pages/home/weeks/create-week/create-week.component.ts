@@ -7,13 +7,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { WeeksService } from '../../../services/weeks.service';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-create-week',
   standalone: true,
-  imports: [ReactiveFormsModule, MatDividerModule, MatDividerModule, MatDatepickerModule, ReactiveFormsModule, MatInputModule, MatFormFieldModule, MatNativeDateModule],
+  imports: [ReactiveFormsModule, MatIconModule, MatDividerModule, MatDividerModule, MatDatepickerModule, ReactiveFormsModule, MatInputModule, MatFormFieldModule, MatNativeDateModule],
   templateUrl: './create-week.component.html',
   styleUrl: './create-week.component.css'
 })

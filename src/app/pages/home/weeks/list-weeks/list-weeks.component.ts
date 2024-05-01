@@ -1,21 +1,21 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TableComponent } from '../../components/table/table.component';
-import { MatDividerModule } from '@angular/material/divider';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { WeeksService } from '../../../services/weeks.service';
-import { Subject, Subscription } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import { CreateWeekComponent } from '../create-week/create-week.component';
-import { Router } from '@angular/router';
-import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import Swal from 'sweetalert2';
+import { DatePipe, DecimalPipe, UpperCasePipe } from '@angular/common';
 import { DataTableDirective, DataTablesModule } from 'angular-datatables';
+import { Subject, Subscription } from 'rxjs';
+import { CreateWeekComponent } from '../create-week/create-week.component';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { TableComponent } from '../../components/table/table.component';
+import { MatIconModule } from '@angular/material/icon';
+import { WeeksService } from '../../../services/weeks.service';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list-weeks',
   standalone: true,
-  imports: [TableComponent, MatDividerModule, DatePipe, TitleCasePipe, MatIconModule, DecimalPipe, DataTablesModule],
+  imports: [TableComponent, MatDividerModule, DatePipe, UpperCasePipe, MatIconModule, DecimalPipe, DataTablesModule],
   templateUrl: './list-weeks.component.html',
   styleUrl: './list-weeks.component.css'
 })

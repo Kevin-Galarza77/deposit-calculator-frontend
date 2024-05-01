@@ -1,4 +1,4 @@
-import { DatePipe, TitleCasePipe } from '@angular/common';
+import { DatePipe, UpperCasePipe } from '@angular/common';
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -9,11 +9,12 @@ import { SelectProductComponent } from './select-product/select-product.componen
 import { NgxSpinnerService } from 'ngx-spinner';
 import { WeekDetailsService } from '../../../services/week-details.service';
 import Swal from 'sweetalert2';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-detail-week',
   standalone: true,
-  imports: [ReactiveFormsModule, MatDividerModule, DatePipe, TitleCasePipe, MatFormFieldModule, MatInputModule],
+  imports: [ReactiveFormsModule, MatDividerModule, DatePipe, UpperCasePipe, MatFormFieldModule, MatInputModule, MatIconModule],
   templateUrl: './create-detail-week.component.html',
   styleUrl: './create-detail-week.component.css'
 })
@@ -27,7 +28,7 @@ export class CreateDetailWeekComponent implements OnDestroy {
     week_detail_quantity: ['', Validators.required]
   });
 
-  title: string = 'Nuevo Detalle';
+  title: string = 'NUEVO DETALLE';
   date: string = new Date(this.data.date).toISOString().substring(0, 10);
   section = true;
 
@@ -38,7 +39,7 @@ export class CreateDetailWeekComponent implements OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog) {
     if (!data.section) {
-      this.title = 'Modificar Detalle';
+      this.title = 'MODIFICAR DETALLE';
       this.section = false;
       this.detail.patchValue({ id: data.id, product_id: data.product_id, week_id: data.week, product_name: data.product_name, week_detail_quantity: data.week_detail_quantity });
     } else {
@@ -117,7 +118,7 @@ export class CreateDetailWeekComponent implements OnDestroy {
     const select = this.dialog.open(SelectProductComponent, {
       height: 'auto',
       maxHeight: '95vh',
-      width: 'auto',
+      width: '40%',
       minWidth: '350px',
       data: { products_id: this.data.products_id }
     });
