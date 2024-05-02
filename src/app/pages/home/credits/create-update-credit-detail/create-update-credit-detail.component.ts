@@ -1,7 +1,7 @@
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Component, Inject, OnDestroy } from '@angular/core';
-import { DatePipe, TitleCasePipe } from '@angular/common';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { DatePipe, UpperCasePipe } from '@angular/common';
 import { SelectPersonComponent } from './select-person/select-person.component';
 import { CreditDetailService } from '../../../services/credit-detail.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,16 +9,17 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-create-update-credit-detail',
   standalone: true,
-  imports: [ReactiveFormsModule, MatDividerModule, DatePipe, TitleCasePipe, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [ReactiveFormsModule, MatDividerModule, DatePipe, MatIconModule, UpperCasePipe, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './create-update-credit-detail.component.html',
   styleUrl: './create-update-credit-detail.component.css'
 })
-export class CreateUpdateCreditDetailComponent implements OnDestroy {
+export class CreateUpdateCreditDetailComponent implements OnInit, OnDestroy {
 
   detail: FormGroup = this.fb.group({
     id: [''],
@@ -30,7 +31,7 @@ export class CreateUpdateCreditDetailComponent implements OnDestroy {
     credit_detail_status: [1]
   });
 
-  title: string = 'Nuevo Fiado';
+  title: string = 'NUEVO CRÉDITO';
   date: string = new Date(this.data.date).toISOString().substring(0, 10);
   section = true;
 
@@ -39,11 +40,13 @@ export class CreateUpdateCreditDetailComponent implements OnDestroy {
     private creditDetailService: CreditDetailService,
     public dialogref: MatDialogRef<CreateUpdateCreditDetailComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialog: MatDialog) {
-    if (data.section) {
-      this.detail.patchValue({ week_id: data.week })
+    public dialog: MatDialog) { }
+
+  ngOnInit(): void {
+    if (this.data.section) {
+      this.detail.patchValue({ week_id: this.data.week })
     } else {
-      this.title = 'Modificar Fiado';
+      this.title = 'MODIFICAR CRÉDITO';
       this.section = false;
       this.detail.patchValue(this.data);
     }
@@ -54,11 +57,8 @@ export class CreateUpdateCreditDetailComponent implements OnDestroy {
   }
 
   create_update_CreditDetail() {
-    if (this.section) {
-      this.createCreditDetail();
-    } else {
-      this.updateDetail();
-    }
+    if (this.section) this.createCreditDetail();
+    else this.updateDetail();
   }
 
   createCreditDetail() {
@@ -116,19 +116,14 @@ export class CreateUpdateCreditDetailComponent implements OnDestroy {
     else this.dialogref.close();
   }
 
-  selectProduct() {
+  selectEntity() {
     const select = this.dialog.open(SelectPersonComponent, {
-      height: 'auto',
-      maxHeight: '95vh',
-      width: 'auto',
-      minWidth: '350px',
-      data: { people_ids: this.data.people_ids }
+      height: 'auto', maxHeight: '75vh', width: '35%', minWidth: '350px', data: { people_ids: this.data.people_ids }
     });
-    select.afterClosed().subscribe(response => {
-      if (response) {
-        this.detail.patchValue({ credit_people_id: response.credit_people_id, credit_people_name: response.credit_people_name });
-      }
-    });
+    select.afterClosed().subscribe(
+      response => {
+        if (response) this.detail.patchValue({ credit_people_id: response.credit_people_id, credit_people_name: response.credit_people_name });
+      });
   }
 
 }

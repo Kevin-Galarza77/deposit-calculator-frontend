@@ -38,6 +38,7 @@ export default class ListPeopleComponent implements OnInit, AfterViewInit, OnDes
       language: {
         url: 'assets/i18n/Spanish.json'
       },
+      order: [[2, 'desc']],
       lengthMenu: [10, 20, 30, 40, 50],
       dom: 'iftlp'
     };
@@ -76,7 +77,7 @@ export default class ListPeopleComponent implements OnInit, AfterViewInit, OnDes
     const createPerson = this.dialog.open(CreateUpdatePeopleComponent, {
       height: 'auto',
       maxHeight: '95vh',
-      width: 'auto',
+      width: '35%',
       minWidth: '350px'
     });
     createPerson.afterClosed().subscribe(response => {
@@ -88,7 +89,7 @@ export default class ListPeopleComponent implements OnInit, AfterViewInit, OnDes
     const updatePerson = this.dialog.open(CreateUpdatePeopleComponent, {
       height: 'auto',
       maxHeight: '95vh',
-      width: 'auto',
+      width: '35%',
       minWidth: '350px',
       data: person
     });
@@ -108,7 +109,7 @@ export default class ListPeopleComponent implements OnInit, AfterViewInit, OnDes
     if (creadits.credit_detail.length === 0) {
       Swal.fire({ icon: "error", title: 'No existen fiados en esta persona', confirmButtonColor: 'red' });
     } else {
-      this.router.navigateByUrl('/home/credits/'+creadits.credit_people_id);
+      this.router.navigateByUrl('/home/credits/' + creadits.credit_people_id);
     }
   }
 

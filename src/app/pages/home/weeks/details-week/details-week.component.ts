@@ -46,6 +46,12 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     this.spinner.hide();
   }
 
+  changeSection() {
+    this.spinner.show();
+    this.section = !this.section;
+    setTimeout(() => this.spinner.hide(), 1000);
+  }
+
   getInformationWeek(week_id: any): void {
     this.spinner.show(); 9
     this.getWeekDetailSubscription = this.weekDetailsService.getAllWeekDetailsByWeek(week_id).subscribe({
@@ -102,7 +108,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
     const newCreditDetail = this.dialog.open(CreateUpdateCreditDetailComponent, {
-      height: 'auto', maxHeight: '95vh', width: 'auto', minWidth: '350px', data: { people_ids, week, date, section: true }
+      height: 'auto', maxHeight: '95vh', width: '30%', minWidth: '350px', data: { people_ids, week, date, section: true }
     });
     newCreditDetail.afterClosed().subscribe(response => {
       if (response) this.getInformationWeek(this.week_id);
@@ -113,7 +119,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
     const update = this.dialog.open(CreateUpdateCreditDetailComponent, {
-      height: 'auto', maxHeight: '95vh', width: 'auto', minWidth: '350px',
+      height: 'auto', maxHeight: '95vh', width: '30%', minWidth: '350px',
       data: { week, date, section: false, id: detail.credit_detail_id, credit_people_id: detail.credit_people.credit_people_id, credit_people_name: detail.credit_people.credit_people_name, credit_detail_description: detail.credit_detail_description, credit_detail_value: detail.credit_detail_value, week_id: detail.week_id, credit_detail_status: detail.credit_detail_status }
     });
     update.afterClosed().subscribe(response => {

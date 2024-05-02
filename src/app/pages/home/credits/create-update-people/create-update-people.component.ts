@@ -7,11 +7,12 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import Swal from 'sweetalert2';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-update-people',
   standalone: true,
-  imports: [ReactiveFormsModule, MatDividerModule, MatInputModule, MatFormFieldModule],
+  imports: [ReactiveFormsModule, MatDividerModule, MatInputModule, MatIconModule, MatFormFieldModule],
   templateUrl: './create-update-people.component.html',
   styleUrl: './create-update-people.component.css'
 })
@@ -22,7 +23,7 @@ export class CreateUpdatePeopleComponent implements OnDestroy {
     credit_people_name: ['', Validators.required]
   });
 
-  title: string = 'Nueva Persona';
+  title: string = 'NUEVA PERSONA';
   section: boolean = true;
 
   constructor(private fb: FormBuilder,
@@ -31,7 +32,7 @@ export class CreateUpdatePeopleComponent implements OnDestroy {
     public dialogref: MatDialogRef<CreateUpdatePeopleComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     if (data) {
-      this.title = 'Actualizar Persona';
+      this.title = 'MODIFICAR PERSONA';
       this.person.patchValue(data);
       this.section = false;
     }
