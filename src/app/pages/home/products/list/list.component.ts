@@ -5,25 +5,25 @@ import { MatDividerModule } from '@angular/material/divider';
 import { ProductsService } from '../../../services/products.service';
 import { MatIconModule } from '@angular/material/icon';
 import { Subscription } from 'rxjs';
+import { AlertService } from '../../../services/alert.service';
 import { DecimalPipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list',
   standalone: true,
   imports: [MatDividerModule, MatIconModule, DecimalPipe],
-  templateUrl: './list.component.html',
-  styleUrl: './list.component.css'
+  templateUrl: './list.component.html'
 })
 export default class ListComponent implements OnInit, OnDestroy {
 
-  products: any[] = [];
   products_filter: any[] = [];
+  products: any[] = [];
 
   allProducts!: Subscription;
 
   constructor(private productsService: ProductsService,
+    private alertService: AlertService,
     private spinner: NgxSpinnerService,
     public dialog: MatDialog) { }
 
@@ -36,7 +36,7 @@ export default class ListComponent implements OnInit, OnDestroy {
     this.spinner.hide();
   }
 
-  getAllProducts() {
+  getAllProducts(): void {
     this.spinner.show();
     this.allProducts = this.productsService.getAllProducts().subscribe({
       next: result => {
@@ -50,36 +50,22 @@ export default class ListComponent implements OnInit, OnDestroy {
     });
   }
 
-  filterProducts(input: any) {
+  filterProducts(input: any): void {
     this.products = this.products_filter.filter(product => product.product_name.toLowerCase().includes(input.target.value.toLowerCase()));
   }
 
-  updateProduct(product?: any) {
+  updateProduct(product?: any): void {
     const updateProduct = this.dialog.open(CreateUpdateComponent, {
-      height: 'auto',
-      maxHeight: '95vh',
-      width: '30%',
-      minWidth: '300px',
-      data: product
+      height: 'auto', maxHeight: '95vh', width: '30%', minWidth: '300px', data: product
     });
     updateProduct.afterClosed().subscribe(response => {
       if (response) this.getAllProducts();
     });
   }
 
-  deleteProductQuestion(product: any) {
-    Swal.fire({
-      title: "Estas seguro de realizar esta acción?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Eliminar",
-      confirmButtonColor: 'rgb(220, 53, 69)',
-      cancelButtonText: "Cancelar",
-      cancelButtonColor: 'rgb(108, 117, 125)',
-      reverseButtons: true
-    }).then(result => {
-      if (result.isConfirmed) this.deleteProduct(product);
-    });
+  async deleteProductQuestion(product: any) {
+    const question = await this.alertService.questionDelete();
+    if (question) this.deleteProduct(product);
   }
 
   deleteProduct(product: any) {
@@ -87,21 +73,15 @@ export default class ListComponent implements OnInit, OnDestroy {
     this.productsService.deleteProduct(product).subscribe({
       next: result => {
         if (result.status) {
-          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          this.alertService.success(result.alert);
           setTimeout(() => this.getAllProducts(), 1000);
         } else {
-          let html = '';
-          if (result.messages.length !== 0) {
-            result.messages.forEach((message: any) => {
-              html += `<p> - ${message}</p>`
-            });
-          }
-          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+          this.alertService.error(result.alert, result.messages);
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });

@@ -1,21 +1,19 @@
-import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { ProductsService } from '../../../services/products.service';
 import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import Swal from 'sweetalert2';
-
+import { MatIconModule } from '@angular/material/icon'; 
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-create-update',
   standalone: true,
-  imports: [MatDividerModule, MatIconModule,ReactiveFormsModule, MatInputModule, MatFormFieldModule],
-  templateUrl: './create-update.component.html',
-  styleUrl: './create-update.component.css'
+  imports: [MatDividerModule, MatIconModule, ReactiveFormsModule, MatInputModule, MatFormFieldModule],
+  templateUrl: './create-update.component.html'
 })
 export class CreateUpdateComponent implements OnInit {
 
@@ -31,11 +29,12 @@ export class CreateUpdateComponent implements OnInit {
   title: string = 'NUEVO PRODUCTO';
   section = true;
 
-  constructor(private fb: FormBuilder,
-    private productsService: ProductsService,
+  constructor(private productsService: ProductsService,
+    private alertService: AlertService,
+    private dialogref: MatDialogRef<CreateUpdateComponent>,
     private spinner: NgxSpinnerService,
-    public dialogref: MatDialogRef<CreateUpdateComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA) private data: any,
+    private fb: FormBuilder) { }
 
   ngOnInit(): void {
     if (this.data) {
@@ -45,39 +44,25 @@ export class CreateUpdateComponent implements OnInit {
     }
   }
 
-  close(data?: any) {
-    if (data) this.dialogref.close((data));
-    else this.dialogref.close();
-  }
-
-  create_update_Product() {
+  createUpdateProduct() {
     this.spinner.show();
-    if (this.section) {
-      this.createProduct();
-    } else {
-      this.updateProduct();
-    }
+    if (this.section) this.createProduct();
+    else this.updateProduct();
   }
 
   createProduct() {
     this.productsService.createProduct(this.product.value).subscribe({
       next: result => {
         if (result.status) {
-          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          this.alertService.success(result.alert);
           setTimeout(() => this.close(true), 1000);
-        }else {
-          let html = '';
-          if (result.messages.length !== 0) {
-            result.messages.forEach((message: any) => {
-              html += `<p>- ${message}</p>`
-            });
-          }
-          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+        } else {
+          this.alertService.error(result.alert, result.messages);
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });
@@ -87,24 +72,23 @@ export class CreateUpdateComponent implements OnInit {
     this.productsService.updateProduct(this.product.value).subscribe({
       next: result => {
         if (result.status) {
-          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          this.alertService.success(result.alert);
           setTimeout(() => this.close(true), 1000);
         } else {
-          let html = '';
-          if (result.messages.length !== 0) {
-            result.messages.forEach((message: any) => {
-              html += `<p>- ${message}</p>`
-            });
-          }
-          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+          this.alertService.error(result.alert, result.messages);
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });
+  }
+
+  close(data?: any) {
+    if (data) this.dialogref.close((data));
+    else this.dialogref.close();
   }
 
 }
