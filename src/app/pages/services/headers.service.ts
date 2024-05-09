@@ -15,12 +15,7 @@ export class HeaderService {
   }
 
   getToken() {
-    this.httpOptions = {
-      headers: new HttpHeaders({
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      })
-    };
+    this.httpOptions = { headers: new HttpHeaders({ 'Accept': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` }) };
   }
 
 }

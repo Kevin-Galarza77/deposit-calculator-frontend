@@ -9,13 +9,11 @@ export class LocalStorageService {
   password: string = 'LaNenita2024';
 
   encrypt(text: string): string {
-    let encrypt = CryptoJS.AES.encrypt(text.trim(), this.password.trim()).toString();
-    return encrypt;
+    return CryptoJS.AES.encrypt(text.trim(), this.password.trim()).toString();
   }
 
   decrypt(text: string): string {
-    let decrypt = CryptoJS.AES.decrypt(text.trim(), this.password.trim()).toString(CryptoJS.enc.Utf8);
-    return decrypt;
+    return CryptoJS.AES.decrypt(text.trim(), this.password.trim()).toString(CryptoJS.enc.Utf8);
   }
 
 }
