@@ -1,5 +1,5 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -9,14 +9,13 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { WeeksService } from '../../../services/weeks.service';
-import Swal from 'sweetalert2';
+import { AlertService } from '../../../services/alert.service'; 
 
 @Component({
   selector: 'app-create-week',
   standalone: true,
   imports: [ReactiveFormsModule, MatIconModule, MatDividerModule, MatDividerModule, MatDatepickerModule, ReactiveFormsModule, MatInputModule, MatFormFieldModule, MatNativeDateModule],
-  templateUrl: './create-week.component.html',
-  styleUrl: './create-week.component.css'
+  templateUrl: './create-week.component.html' 
 })
 export class CreateWeekComponent implements OnInit, OnDestroy {
 
@@ -28,94 +27,80 @@ export class CreateWeekComponent implements OnInit, OnDestroy {
 
   title: string = 'NUEVA SEMANA';
   section = true;
-  today!: any;
+  today!: string;
 
-  constructor(private fb: FormBuilder,
-    private weeksService: WeeksService,
-    private spinner: NgxSpinnerService,
+  constructor(private weeksService: WeeksService,
+    private alertService: AlertService,
     public dialogref: MatDialogRef<CreateWeekComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    private spinner: NgxSpinnerService,
+    @Inject(MAT_DIALOG_DATA) private data: any,
+    private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.today = new Date();
+    const today = new Date();
     if (this.data) {
       this.week.patchValue(this.data);
       this.section = false;
       this.title = 'MODIFICAR SEMANA';
     } else {
-      this.week.patchValue({ week_date: this.today.toISOString().substring(0, 10) });
+      this.week.patchValue({ week_date: today.toISOString().substring(0, 10) });
+      today.setDate(today.getDate() - 1);
+      this.today = today.toISOString().substring(0, 10);
     }
-    this.today.setDate(this.today.getDate() - 1);
-    this.today = this.today.toISOString().substring(0, 10);
   }
 
   ngOnDestroy(): void {
     this.spinner.hide();
   }
 
-  updateDate(date: any) {
+  updateDate(date: any): void {
     this.week.patchValue({ week_date: new Date(date.target.value).toISOString().substring(0, 10) });
   }
 
-  create_update_Week() {
-    if (this.section) {
-      this.createWeek();
-    } else {
-      this.updateWeek();
-    }
+  createUpdateWeek(): void {
+    if (this.section) this.createWeek();
+    else this.updateWeek();
   }
 
-  createWeek() {
+  createWeek(): void {
     this.spinner.show();
     this.weeksService.createWeek(this.week.value).subscribe({
       next: result => {
         if (result.status) {
-          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          this.alertService.success(result.alert);
           setTimeout(() => this.close(result.data), 1000);
         } else {
-          let html = '';
-          if (result.messages.length !== 0) {
-            result.messages.forEach((message: any) => {
-              html += `<p> - ${message}</p>`
-            });
-          }
-          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+          this.alertService.error(result.alert, result.messages);
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });
   }
 
-  updateWeek() {
+  updateWeek(): void {
     this.spinner.show();
     this.weeksService.updateWeek(this.week.value).subscribe({
       next: result => {
         if (result.status) {
-          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          this.alertService.success(result.alert);
           setTimeout(() => this.close(result.data), 1000);
         } else {
-          let html = '';
-          if (result.messages.length !== 0) {
-            result.messages.forEach((message: any) => {
-              html += `<p> - ${message}</p>`
-            });
-          }
-          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+          this.alertService.error(result.alert, result.messages);
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });
   }
 
-  close(data?: any) {
+  close(data?: any): void {
     if (data) this.dialogref.close((data));
     else this.dialogref.close();
   }

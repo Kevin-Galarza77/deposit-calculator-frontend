@@ -25,8 +25,8 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
 
   @ViewChild(TableComponent) table!: TableComponent;
 
-  week_id: any = this.router.snapshot.params['id'];
   week_info: any = {};
+  week_id: any = this.router.snapshot.params['id'];
   section: boolean = true;
 
   getWeekDetailSubscription!: Subscription;
@@ -46,7 +46,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     this.spinner.hide();
   }
 
-  changeSection() {
+  changeSection(): void {
     this.spinner.show();
     this.section = !this.section;
     setTimeout(() => this.spinner.hide(), 1000);
@@ -115,7 +115,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateCreditDetail(detail: any) {
+  updateCreditDetail(detail: any): void {
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
     const update = this.dialog.open(CreateUpdateCreditDetailComponent, {
@@ -127,7 +127,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     });
   }
 
-  updatelWeekDetail(detail: any) {
+  updatelWeekDetail(detail: any): void {
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
     const update = this.dialog.open(CreateDetailWeekComponent, {
@@ -172,7 +172,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateWeek() {
+  updateWeek(): void {
     const week_id = this.week_info.week_id;
     const week_date = this.week_info.week_date;
     const week_alias = this.week_info.week_alias;

@@ -6,7 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { ProductsService } from '../../../services/products.service';
 import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon'; 
+import { MatIconModule } from '@angular/material/icon';
 import { AlertService } from '../../../services/alert.service';
 
 @Component({
@@ -44,13 +44,13 @@ export class CreateUpdateComponent implements OnInit {
     }
   }
 
-  createUpdateProduct() {
+  createUpdateProduct(): void {
     this.spinner.show();
     if (this.section) this.createProduct();
     else this.updateProduct();
   }
 
-  createProduct() {
+  createProduct(): void {
     this.productsService.createProduct(this.product.value).subscribe({
       next: result => {
         if (result.status) {
@@ -68,7 +68,7 @@ export class CreateUpdateComponent implements OnInit {
     });
   }
 
-  updateProduct() {
+  updateProduct(): void {
     this.productsService.updateProduct(this.product.value).subscribe({
       next: result => {
         if (result.status) {
@@ -86,7 +86,7 @@ export class CreateUpdateComponent implements OnInit {
     });
   }
 
-  close(data?: any) {
+  close(data?: any): void {
     if (data) this.dialogref.close((data));
     else this.dialogref.close();
   }

@@ -63,12 +63,12 @@ export default class ListComponent implements OnInit, OnDestroy {
     });
   }
 
-  async deleteProductQuestion(product: any) {
+  async deleteProductQuestion(product: any): Promise<void> {
     const question = await this.alertService.questionDelete();
     if (question) this.deleteProduct(product);
   }
 
-  deleteProduct(product: any) {
+  deleteProduct(product: any): void {
     this.spinner.show();
     this.productsService.deleteProduct(product).subscribe({
       next: result => {

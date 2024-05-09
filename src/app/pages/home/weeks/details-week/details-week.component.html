@@ -3,10 +3,12 @@
     @if (week_info.week_id) {
 
     <h1 class="w-100 text-center fw-bolder d-flex justify-content-center align-items-center">{{ week_info.week_alias }} - {{ week_info.week_date | date: 'EEEE, d MMMM y' | uppercase }} <button (click)="updateWeek()" class="btn btn-secondary btn-sm mx-3"><mat-icon>edit</mat-icon></button></h1>
+
     <mat-divider class="w-100 mb-3"></mat-divider>
 
     @if(section){
     <div class="container-fluid table-scroll shadow-lg px-3 w-100">
+
         <div class="w-100 d-flex justify-content-between align-items-center mt-2 flex-wrap">
             <h3 class="mt-3 fw-bolder">DETALLES - PRODUCTOS</h3>
             <div class="d-flex flex-wrap">
@@ -18,7 +20,9 @@
                 </button>
             </div>
         </div>
+
         <hr class="bg-dark">
+
         <table class="table table-hover">
             <thead class="text-table table-secondary fs-6">
                 <tr>
@@ -90,9 +94,11 @@
                 </tr>
             </tbody>
         </table>
+
     </div>
     }@else {
     <div class="container-fluid table-scroll shadow-lg px-3 w-100 ">
+
         <div class="w-100 d-flex justify-content-between align-items-center mt-2 flex-wrap">
             <h3 class="mt-3 fw-bolder">DETALLES - CRÉDITOS</h3>
             <div class="d-flex flex-wrap">
@@ -104,7 +110,9 @@
                 </button>
             </div>
         </div>
+
         <hr class="bg-dark">
+
         <table class="table table-hover">
             <thead class="text-table table-secondary fs-6">
                 <tr>
@@ -146,12 +154,15 @@
                 </tr>
             </tbody>
         </table>
+
     </div>
     } }@else {
     <div class="container mt-5">
+
         <div class="alert alert-danger text-center" role="alert">
             <strong>No se ha encontrado la información</strong>
         </div>
+
     </div>
-    } @if (week_info.week_id){ }
+    }
 </main>

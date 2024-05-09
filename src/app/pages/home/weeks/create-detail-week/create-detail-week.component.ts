@@ -1,24 +1,23 @@
-import { DatePipe, UpperCasePipe } from '@angular/common';
-import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { DatePipe, UpperCasePipe } from '@angular/common';
 import { SelectProductComponent } from './select-product/select-product.component';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { WeekDetailsService } from '../../../services/week-details.service';
-import Swal from 'sweetalert2';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { AlertService } from '../../../services/alert.service'; 
 
 @Component({
   selector: 'app-create-detail-week',
   standalone: true,
   imports: [ReactiveFormsModule, MatDividerModule, DatePipe, UpperCasePipe, MatFormFieldModule, MatInputModule, MatIconModule],
-  templateUrl: './create-detail-week.component.html',
-  styleUrl: './create-detail-week.component.css'
+  templateUrl: './create-detail-week.component.html'
 })
-export class CreateDetailWeekComponent implements OnDestroy {
+export class CreateDetailWeekComponent implements OnInit, OnDestroy {
 
   detail: FormGroup = this.fb.group({
     id: [''],
@@ -32,18 +31,21 @@ export class CreateDetailWeekComponent implements OnDestroy {
   date: string = new Date(this.data.date).toISOString().substring(0, 10);
   section = true;
 
-  constructor(private fb: FormBuilder,
+  constructor(private weekDetailsService: WeekDetailsService,
+    private alertService: AlertService,
+    private dialogref: MatDialogRef<CreateDetailWeekComponent>,
     private spinner: NgxSpinnerService,
-    private weekDetailsService: WeekDetailsService,
-    public dialogref: MatDialogRef<CreateDetailWeekComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialog: MatDialog) {
-    if (!data.section) {
+    private dialog: MatDialog,
+    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) private data: any) { }
+
+  ngOnInit(): void {
+    if (!this.data.section) {
       this.title = 'MODIFICAR DETALLE';
       this.section = false;
-      this.detail.patchValue({ id: data.id, product_id: data.product_id, week_id: data.week, product_name: data.product_name, week_detail_quantity: data.week_detail_quantity });
+      this.detail.patchValue({ id: this.data.id, product_id: this.data.product_id, week_id: this.data.week, product_name: this.data.product_name, week_detail_quantity: this.data.week_detail_quantity });
     } else {
-      this.detail.patchValue({ week_id: data.week })
+      this.detail.patchValue({ week_id: this.data.week })
     }
   }
 
@@ -51,82 +53,63 @@ export class CreateDetailWeekComponent implements OnDestroy {
     this.spinner.hide();
   }
 
-  create_update_Detail() {
-    if (this.section) {
-      this.createDetail();
-    } else {
-      this.updateDetail();
-    }
+  createUpdateDetail(): void {
+    if (this.section) this.createDetail();
+    else this.updateDetail();
   }
 
-  createDetail() {
+  createDetail(): void {
     this.spinner.show();
     this.weekDetailsService.createWeekDetail(this.detail.value).subscribe({
       next: result => {
         if (result.status) {
-          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          this.alertService.success(result.alert);
           setTimeout(() => this.close(true), 1000);
         } else {
-          let html = '';
-          if (result.messages.length !== 0) {
-            result.messages.forEach((message: any) => {
-              html += `<p> - ${message}</p>`
-            });
-          }
-          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+          this.alertService.error(result.alert, result.messages);
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });
   }
 
-  updateDetail() {
+  updateDetail(): void {
     this.spinner.show();
     this.weekDetailsService.updateWeekDetail(this.detail.value).subscribe({
       next: result => {
         if (result.status) {
-          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          this.alertService.success(result.alert);
           setTimeout(() => this.close(true), 1000);
         } else {
-          let html = '';
-          if (result.messages.length !== 0) {
-            result.messages.forEach((message: any) => {
-              html += `<p> - ${message}</p>`
-            });
-          }
-          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+          this.alertService.error(result.alert, result.messages);
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });
   }
 
-  close(data?: any) {
-    if (data) this.dialogref.close((data));
-    else this.dialogref.close();
-  }
-
-  selectProduct() {
+  selectProduct(): void {
     const select = this.dialog.open(SelectProductComponent, {
-      height: 'auto',
-      maxHeight: '95vh',
-      width: '40%',
-      minWidth: '350px',
-      data: { products_id: this.data.products_id }
+      height: 'auto', maxHeight: '95vh', width: '40%', minWidth: '350px', data: { products_id: this.data.products_id }
     });
     select.afterClosed().subscribe(response => {
       if (response) {
         this.detail.patchValue({ product_id: response.product_id, product_name: response.product_name });
       }
     });
+  }
+
+  close(data?: any): void {
+    if (data) this.dialogref.close((data));
+    else this.dialogref.close();
   }
 
 }
