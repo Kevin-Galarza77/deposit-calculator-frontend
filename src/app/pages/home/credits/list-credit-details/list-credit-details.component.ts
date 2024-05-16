@@ -1,20 +1,18 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDividerModule } from '@angular/material/divider';
+import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 import { CreditPeopleService } from '../../../services/credit-people.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { DecimalPipe } from '@angular/common';
-import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 import { Subject } from 'rxjs';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { CreateUpdateCreditDetailComponent } from '../create-update-credit-detail/create-update-credit-detail.component';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-list-credit-details',
   standalone: true,
   imports: [MatDividerModule, MatIconModule, DecimalPipe, DataTablesModule],
-  templateUrl: './list-credit-details.component.html',
-  styleUrl: './list-credit-details.component.css'
+  templateUrl: './list-credit-details.component.html'
 })
 export default class ListCreditDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -28,20 +26,14 @@ export default class ListCreditDetailsComponent implements OnInit, AfterViewInit
 
   constructor(private creditPeopleService: CreditPeopleService,
     private spinner: NgxSpinnerService,
-    private router: ActivatedRoute,
-  ) {
-
-  }
+    private router: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.dtOptions = {
-      language: {
-        url: 'assets/i18n/Spanish.json'
-      },
+      language: { url: 'assets/i18n/Spanish.json' },
       lengthMenu: [10, 20, 30, 40, 50],
       dom: 'iftlp'
     };
-    console.log(this.person_id);
   }
 
   ngAfterViewInit(): void {
@@ -54,11 +46,11 @@ export default class ListCreditDetailsComponent implements OnInit, AfterViewInit
   }
 
   updateCreditDetail(detail: any) {
-    console.log(detail);
+
   }
 
   deletelWeekDetailCredit(detail: any) {
-    console.log(detail);
+
   }
 
 }
