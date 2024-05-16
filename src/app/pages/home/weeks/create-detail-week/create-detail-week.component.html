@@ -11,7 +11,7 @@
             <mat-label>Producto</mat-label>
             <input matInput type="text" autocomplete="off" min="1" readonly formControlName="product_name" required>
         </mat-form-field>
-        <button (click)="selectProduct()" [disabled]="!section" type="button" class="btn btn-secondary m-2 col-auto d-flex justify-content-center align-items-center"><mat-icon>{{ detail.value.product_id ? 'autorenew' : 'search' }}</mat-icon>{{ detail.value.product_id ? 'Cambiar' : 'Seleccionar' }}</button>
+        <button (click)="selectProduct()" [disabled]="!section" type="button" class="btn btn-sm btn-secondary m-2 col-auto d-flex justify-content-center align-items-center"><mat-icon>{{ detail.value.product_id ? 'autorenew' : 'search' }}</mat-icon>{{ detail.value.product_id ? 'Cambiar' : 'Seleccionar' }}</button>
     </div>
 
     <mat-divider class="w-100 mb-4"></mat-divider>

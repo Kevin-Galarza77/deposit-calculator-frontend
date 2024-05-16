@@ -13,7 +13,7 @@
         </mat-form-field>
 
         <div class="col-auto">
-            <button (click)="selectEntity()" [disabled]="!section" type="button" class="btn btn-secondary m-2 d-flex justify-content-center align-items-center"><mat-icon>{{ detail.value.credit_people_id ? 'autorenew' : 'search' }}</mat-icon>{{ detail.value.credit_people_id ? 'Cambiar' : 'Seleccionar' }}</button>
+            <button (click)="selectEntity()" [disabled]="!section" type="button" class="btn btn-sm btn-secondary m-2 d-flex justify-content-center align-items-center"><mat-icon>{{ detail.value.credit_people_id ? 'autorenew' : 'search' }}</mat-icon>{{ detail.value.credit_people_id ? 'Cambiar' : 'Seleccionar' }}</button>
         </div>
     </div>
 

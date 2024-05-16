@@ -23,10 +23,10 @@
                 @for(week_detail of info.credit_detail; track week_detail.credit_detail_id){
                 <tr>
                     <td>
-                        <button (click)="updateCreditDetail(week_detail)" class="m-1 btn btn-success text-table text-light link-dark m-2">
+                        <button (click)="updateCreditDetail(week_detail)" class="m-1 btn btn-sm btn-success text-table text-light link-dark m-2">
                             <mat-icon>edit</mat-icon>
                         </button>
-                        <button (click)="deletelWeekDetailCredit(week_detail.credit_detail_id)" class="m-1 btn btn-danger text-table text-light link-dark m-2">
+                        <button (click)="deletelWeekDetailCredit(week_detail.credit_detail_id)" class="m-1 btn btn-sm btn-danger text-table text-light link-dark m-2">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </td>

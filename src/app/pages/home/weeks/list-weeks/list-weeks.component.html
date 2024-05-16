@@ -7,7 +7,7 @@
     <div class="container-fluid table-scroll shadow-lg p-3 w-100 py-4">
 
         <div class="w-100 d-flex justify-content-end align-items-center mb-4">
-            <button (click)="createWeek()" class="m-1 btn btn-success px-5 d-flex justify-content-center align-items-center">
+            <button (click)="createWeek()" class="m-1 btn btn-sm btn-success px-5 d-flex justify-content-center align-items-center">
                 <mat-icon class="mx-2">library_add</mat-icon> Semana
             </button>
         </div>
@@ -28,10 +28,10 @@
                 @for (week of weeks; track week.week_id) {
                 <tr>
                     <td>
-                        <button (click)="showWeek(week)" class="btn btn-success text-table text-light link-dark m-1">
+                        <button (click)="showWeek(week)" class="btn btn-sm btn-success text-table text-light link-dark m-1">
                             <mat-icon>edit</mat-icon>
                         </button> @if (week.week_details.length === 0) {
-                        <button (click)="deleteWeekQuestion(week.week_id)" class="btn btn-danger text-table text-light link-dark m-1">
+                        <button (click)="deleteWeekQuestion(week.week_id)" class="btn btn-sm btn-danger text-table text-light link-dark m-1">
                             <mat-icon>delete</mat-icon>
                         </button> }
                     </td>
