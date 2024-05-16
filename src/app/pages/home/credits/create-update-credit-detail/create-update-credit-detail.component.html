@@ -1,6 +1,7 @@
 <form [formGroup]="detail" (ngSubmit)="create_update_CreditDetail()" class="container-fluid p-4">
 
     <h3 class="text-danger w-100 text-center fw-bolder">{{ title }}</h3>
+
     <h3 class="text-danger w-100 text-center">{{ date | date: 'EEEE, d MMMM y' | uppercase}} </h3>
 
     <mat-divider class="w-100 mt-3 mb-4"></mat-divider>
@@ -10,6 +11,7 @@
             <mat-label>ENTIDAD</mat-label>
             <input matInput type="text" autocomplete="off" min="1" readonly formControlName="credit_people_name" required>
         </mat-form-field>
+
         <div class="col-auto">
             <button (click)="selectEntity()" [disabled]="!section" type="button" class="btn btn-secondary m-2 d-flex justify-content-center align-items-center"><mat-icon>{{ detail.value.credit_people_id ? 'autorenew' : 'search' }}</mat-icon>{{ detail.value.credit_people_id ? 'Cambiar' : 'Seleccionar' }}</button>
         </div>

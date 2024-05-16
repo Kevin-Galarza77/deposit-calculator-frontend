@@ -4,7 +4,7 @@ import { CreditPeopleService } from '../../../../services/credit-people.service'
 import { MatDividerModule } from '@angular/material/divider';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
-import Swal from 'sweetalert2';
+import { AlertService } from '../../../../services/alert.service';
 @Component({
   selector: 'app-select-person',
   standalone: true,
@@ -20,9 +20,10 @@ export class SelectPersonComponent implements OnInit, OnDestroy {
   allPersons!: Subscription;
 
   constructor(private creditPeopleService: CreditPeopleService,
-    public dialogref: MatDialogRef<SelectPersonComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private spinner: NgxSpinnerService) { }
+    private alertService: AlertService,
+    private dialogref: MatDialogRef<SelectPersonComponent>,
+    private spinner: NgxSpinnerService,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
     this.getAllOnlyPeople();
@@ -37,7 +38,10 @@ export class SelectPersonComponent implements OnInit, OnDestroy {
     this.spinner.show();
     this.allPersons = this.creditPeopleService.getAllOnlyPeople().subscribe({
       next: result => {
-        if (result.status) this.people = this.persons_filter = result.data;
+        if (result.status) {
+          this.people = result.data;
+          this.persons_filter = result.data;
+        }
         this.spinner.hide();
       },
       error: e => this.spinner.hide()
@@ -45,8 +49,7 @@ export class SelectPersonComponent implements OnInit, OnDestroy {
   }
 
   filterPerson(input: any) {
-    const name = String(input.target.value).toLowerCase();
-    this.people = this.persons_filter.filter(person => person.credit_people_name.toLowerCase().includes(name));
+    this.people = this.persons_filter.filter(person => person.credit_people_name.toLowerCase().includes(String(input.target.value).toLowerCase()));
   }
 
   close(data?: any) {
@@ -55,11 +58,8 @@ export class SelectPersonComponent implements OnInit, OnDestroy {
   }
 
   savePerson(person: any) {
-    if (this.data.people_ids.includes(person.credit_people_id)) {
-      Swal.fire({ icon: "error", title: 'Persona ya registrada', text: 'Por favor selecciona una persona que no a sido seleccionado en esta semana', confirmButtonColor: 'red' });
-    } else {
-      this.close({ credit_people_id: person.credit_people_id, credit_people_name: person.credit_people_name });
-    }
+    if (this.data.people_ids.includes(person.credit_people_id)) this.alertService.error('Persona ya registrada', ['Por favor selecciona una persona que no a sido seleccionado en esta semana'])
+    else this.close({ credit_people_id: person.credit_people_id, credit_people_name: person.credit_people_name });
   }
 
 }

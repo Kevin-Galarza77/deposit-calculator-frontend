@@ -10,14 +10,13 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import Swal from 'sweetalert2';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-create-update-credit-detail',
   standalone: true,
   imports: [ReactiveFormsModule, MatDividerModule, DatePipe, MatIconModule, UpperCasePipe, MatFormFieldModule, MatInputModule, MatSelectModule],
-  templateUrl: './create-update-credit-detail.component.html',
-  styleUrl: './create-update-credit-detail.component.css'
+  templateUrl: './create-update-credit-detail.component.html' 
 })
 export class CreateUpdateCreditDetailComponent implements OnInit, OnDestroy {
 
@@ -33,14 +32,16 @@ export class CreateUpdateCreditDetailComponent implements OnInit, OnDestroy {
 
   title: string = 'NUEVO CRÉDITO';
   date: string = new Date(this.data.date).toISOString().substring(0, 10);
+
   section = true;
 
-  constructor(private fb: FormBuilder,
+  constructor(private creditDetailService: CreditDetailService,
+    private alertService: AlertService,
+    private dialogref: MatDialogRef<CreateUpdateCreditDetailComponent>,
     private spinner: NgxSpinnerService,
-    private creditDetailService: CreditDetailService,
-    public dialogref: MatDialogRef<CreateUpdateCreditDetailComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
     if (this.data.section) {
@@ -66,21 +67,15 @@ export class CreateUpdateCreditDetailComponent implements OnInit, OnDestroy {
     this.creditDetailService.createCreditDetail(this.detail.value).subscribe({
       next: result => {
         if (result.status) {
-          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          this.alertService.success(result.alert);
           setTimeout(() => this.close(true), 1000);
         } else {
-          let html = '';
-          if (result.messages.length !== 0) {
-            result.messages.forEach((message: any) => {
-              html += `<p> - ${message}</p>`
-            });
-          }
-          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+          this.alertService.error(result.alert, result.messages);
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });
@@ -91,29 +86,18 @@ export class CreateUpdateCreditDetailComponent implements OnInit, OnDestroy {
     this.creditDetailService.updateCreditDetail(this.detail.value).subscribe({
       next: result => {
         if (result.status) {
-          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          this.alertService.success(result.alert);
           setTimeout(() => this.close(true), 1000);
         } else {
-          let html = '';
-          if (result.messages.length !== 0) {
-            result.messages.forEach((message: any) => {
-              html += `<p> - ${message}</p>`
-            });
-          }
-          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+          this.alertService.error(result.alert, result.messages);
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });
-  }
-
-  close(data?: any) {
-    if (data) this.dialogref.close((data));
-    else this.dialogref.close();
   }
 
   selectEntity() {
@@ -124,6 +108,11 @@ export class CreateUpdateCreditDetailComponent implements OnInit, OnDestroy {
       response => {
         if (response) this.detail.patchValue({ credit_people_id: response.credit_people_id, credit_people_name: response.credit_people_name });
       });
+  }
+
+  close(data?: any) {
+    if (data) this.dialogref.close((data));
+    else this.dialogref.close();
   }
 
 }

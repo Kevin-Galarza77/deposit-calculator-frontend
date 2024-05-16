@@ -1,22 +1,21 @@
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { CreditPeopleService } from '../../../services/credit-people.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
-import Swal from 'sweetalert2';
 import { MatIconModule } from '@angular/material/icon';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-create-update-people',
   standalone: true,
   imports: [ReactiveFormsModule, MatDividerModule, MatInputModule, MatIconModule, MatFormFieldModule],
-  templateUrl: './create-update-people.component.html',
-  styleUrl: './create-update-people.component.css'
+  templateUrl: './create-update-people.component.html'
 })
-export class CreateUpdatePeopleComponent implements OnDestroy {
+export class CreateUpdatePeopleComponent implements OnInit, OnDestroy {
 
   person: FormGroup = this.fb.group({
     credit_people_id: [''],
@@ -26,15 +25,18 @@ export class CreateUpdatePeopleComponent implements OnDestroy {
   title: string = 'NUEVA PERSONA';
   section: boolean = true;
 
-  constructor(private fb: FormBuilder,
+  constructor(private creditPeopleService: CreditPeopleService,
+    private alertService: AlertService,
     private spinner: NgxSpinnerService,
-    private creditPeopleService: CreditPeopleService,
-    public dialogref: MatDialogRef<CreateUpdatePeopleComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-    if (data) {
-      this.title = 'MODIFICAR PERSONA';
-      this.person.patchValue(data);
+    private dialogref: MatDialogRef<CreateUpdatePeopleComponent>,
+    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) private data: any) { }
+
+  ngOnInit(): void {
+    if (this.data) {
       this.section = false;
+      this.title = 'MODIFICAR PERSONA';
+      this.person.patchValue(this.data);
     }
   }
 
@@ -43,11 +45,8 @@ export class CreateUpdatePeopleComponent implements OnDestroy {
   }
 
   create_update_Person() {
-    if (this.section) {
-      this.createPerson();
-    } else {
-      this.updatePerson();
-    }
+    if (this.section) this.createPerson();
+    else this.updatePerson();
   }
 
   createPerson() {
@@ -55,21 +54,15 @@ export class CreateUpdatePeopleComponent implements OnDestroy {
     this.creditPeopleService.createPerson(this.person.value).subscribe({
       next: result => {
         if (result.status) {
-          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          this.alertService.success(result.alert);
           setTimeout(() => this.close(result.data), 1000);
         } else {
-          let html = '';
-          if (result.messages.length !== 0) {
-            result.messages.forEach((message: any) => {
-              html += `<p> - ${message}</p>`
-            });
-          }
-          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+          this.alertService.error(result.alert, result.messages);
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });
@@ -80,22 +73,15 @@ export class CreateUpdatePeopleComponent implements OnDestroy {
     this.creditPeopleService.updatePerson(this.person.value).subscribe({
       next: result => {
         if (result.status) {
-          Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
+          this.alertService.success(result.alert);
           setTimeout(() => this.close(result.data), 1000);
         } else {
-          let html = '';
-          if (result.messages.length !== 0) {
-            result.messages.forEach((message: any) => {
-              html += `<p> - ${message}</p>`
-            });
-          }
-          Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
+          this.alertService.error(result.alert, result.messages);
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
-        this.spinner.hide();
+        this.alertService.errorApplication(); this.spinner.hide();
       }
     });
   }
