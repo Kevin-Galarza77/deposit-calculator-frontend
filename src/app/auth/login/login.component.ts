@@ -11,31 +11,34 @@ import { MatIconModule } from '@angular/material/icon';
 import { HeaderService } from '../../pages/services/headers.service';
 import { Subscription } from 'rxjs';
 import { LoginService } from '../services/login.service';
+import { AlertService } from '../../pages/services/alert.service';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, ReactiveFormsModule, MatIconModule, MatButtonModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styles: [`.login { width: 100%; min-height: 100vh; background-color: rgba(99, 98, 98, 0.156); }`]
 })
 export default class LoginComponent implements OnDestroy {
 
-  loginForm: FormGroup = this.fb.group({ email: ['', [Validators.required, Validators.email]], password: ['', Validators.required] });
+  loginForm: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
+  });
+
   hide: boolean = true;
 
   loginSubscription !: Subscription;
 
-  constructor(
-    private headerService: HeaderService,
-    private spinner: NgxSpinnerService,
+  constructor(private headerService: HeaderService,
+    private alertService: AlertService,
     private loginService: LoginService,
+    private spinner: NgxSpinnerService,
     private userData: UserDataService,
-    private fb: FormBuilder,
-    private router: Router
-  ) { }
+    private router: Router,
+    private fb: FormBuilder) { }
 
   ngOnDestroy(): void {
     this.loginSubscription?.unsubscribe();
@@ -54,11 +57,12 @@ export default class LoginComponent implements OnDestroy {
           this.router.navigateByUrl('/home');
           this.headerService.getToken();
         } else {
-          Swal.fire({ icon: "error", title: result.alert, confirmButtonColor: 'red' });
+          this.alertService.error(result.alert, []);
         }
         this.spinner.hide();
       },
       error: e => {
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });

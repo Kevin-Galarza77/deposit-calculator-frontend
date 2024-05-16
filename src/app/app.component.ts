@@ -6,7 +6,6 @@ import { Component } from '@angular/core';
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterOutlet, NgxSpinnerModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  templateUrl: './app.component.html'
 })
 export class AppComponent { }

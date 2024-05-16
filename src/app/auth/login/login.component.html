@@ -6,6 +6,7 @@
         <mat-divider class="w-100 bg-dark mb-3"></mat-divider>
 
         <form [formGroup]="loginForm" class="d-flex justify-content-center align-items-center flex-column" (ngSubmit)="login()">
+
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Correo Eléctronico</mat-label>
                 <input matInput type="text" oninput="this.value = this.value.toLowerCase()" autocomplete="off" formControlName="email" required>
