@@ -9,7 +9,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { AlertService } from '../../../services/alert.service'; 
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-create-detail-week',
@@ -29,6 +29,7 @@ export class CreateDetailWeekComponent implements OnInit, OnDestroy {
 
   title: string = 'NUEVO DETALLE';
   date: string = new Date(this.data.date).toISOString().substring(0, 10);
+  
   section = true;
 
   constructor(private weekDetailsService: WeekDetailsService,
@@ -40,12 +41,12 @@ export class CreateDetailWeekComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) private data: any) { }
 
   ngOnInit(): void {
-    if (!this.data.section) {
+    if (this.data.section) {
+      this.detail.patchValue({ week_id: this.data.week });
+    } else {
       this.title = 'MODIFICAR DETALLE';
       this.section = false;
       this.detail.patchValue({ id: this.data.id, product_id: this.data.product_id, week_id: this.data.week, product_name: this.data.product_name, week_detail_quantity: this.data.week_detail_quantity });
-    } else {
-      this.detail.patchValue({ week_id: this.data.week })
     }
   }
 

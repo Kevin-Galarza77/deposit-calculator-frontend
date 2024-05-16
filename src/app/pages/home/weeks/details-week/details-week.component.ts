@@ -1,6 +1,6 @@
 import { CurrencyPipe, DatePipe, DecimalPipe, UpperCasePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CreateUpdateCreditDetailComponent } from '../../credits/create-update-credit-detail/create-update-credit-detail.component';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CreateDetailWeekComponent } from '../create-detail-week/create-detail-week.component';
 import { CreateWeekComponent } from '../create-week/create-week.component';
 import { CreditDetailService } from '../../../services/credit-detail.service';
@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-details-week',
@@ -23,16 +24,16 @@ import Swal from 'sweetalert2';
 })
 export default class DetailsWeekComponent implements OnInit, OnDestroy {
 
-  @ViewChild(TableComponent) table!: TableComponent;
-
   week_info: any = {};
   week_id: any = this.router.snapshot.params['id'];
+
   section: boolean = true;
 
   getWeekDetailSubscription!: Subscription;
 
   constructor(private weekDetailsService: WeekDetailsService,
     private creditDetailService: CreditDetailService,
+    private alertService: AlertService,
     private spinner: NgxSpinnerService,
     private router: ActivatedRoute,
     public dialog: MatDialog) { }
@@ -53,14 +54,14 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
   }
 
   getInformationWeek(week_id: any): void {
-    this.spinner.show(); 9
+    this.spinner.show();
     this.getWeekDetailSubscription = this.weekDetailsService.getAllWeekDetailsByWeek(week_id).subscribe({
       next: result => {
         if (result.status) {
-          this.week_info = result.data;
+          let total_all_credits = 0;
           let total_profits = 0;
           let total_all = 0;
-          let total_all_credits = 0;
+          this.week_info = result.data;
           this.week_info.week_details = this.week_info.week_details.map((detail: any) => {
             const profit = (detail.week_detail_product_sale_price - detail.week_detail_product_purchase_price) * detail.week_detail_quantity;
             const total = detail.week_detail_product_sale_price * detail.week_detail_quantity;
@@ -71,17 +72,18 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
           this.week_info.credit_details.forEach((credit: any) => {
             if (credit.credit_detail_status == 1) total_all_credits += credit.credit_detail_value;
           });
+          this.week_info['total_all_credits'] = total_all_credits;
           this.week_info['total_profits'] = total_profits;
           this.week_info['total_all'] = total_all;
           this.week_info['burden'] = total_all - total_profits;
-          this.week_info['total_all_credits'] = total_all_credits;
-          this.week_info.week_details = this.week_info.week_details.sort((a: any, b: any) => b.total - a.total);
           this.week_info.credit_details = this.week_info.credit_details.sort((a: any, b: any) => b.credit_detail_value - a.credit_detail_value).sort((a: any, b: any) => a.credit_detail_status - b.credit_detail_status);
+          this.week_info.week_details = this.week_info.week_details.sort((a: any, b: any) => b.total - a.total);
+
         }
         this.spinner.hide();
       },
       error: e => {
-        Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
+        this.alertService.errorApplication();
         this.spinner.hide();
       }
     });
@@ -92,11 +94,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
     const createDetail = this.dialog.open(CreateDetailWeekComponent, {
-      height: 'auto',
-      maxHeight: '95vh',
-      width: '30%',
-      minWidth: '350px',
-      data: { products_id, week, date, section: true }
+      height: 'auto', maxHeight: '95vh', width: '30%', minWidth: '350px', data: { products_id, week, date, section: true }
     });
     createDetail.afterClosed().subscribe(response => {
       if (response) this.getInformationWeek(this.week_id);
@@ -139,35 +137,50 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     });
   }
 
+  async deletelWeekDetailCreditQuestion(detail_id: any) {
+    const question = await this.alertService.questionDelete();
+    if (question) this.deletelWeekDetailCredits(detail_id);
+  }
+
+  async deletelWeekDetailQuestion(detail_id: any) {
+    const question = await this.alertService.questionDelete();
+    if (question) this.deletelWeekDetail(detail_id);
+  }
+
+  deletelWeekDetailCredits(detail_id: any) {
+    this.spinner.show();
+    this.creditDetailService.deleteCreditDetail(detail_id).subscribe({
+      next: result => {
+        if (result.status) {
+          this.alertService.success(result.alert);
+          setTimeout(() => this.getInformationWeek(this.week_id), 1000);
+        } else {
+          this.alertService.error(result.alert, result.messages);
+        }
+        this.spinner.hide();
+      },
+      error: e => {
+        this.alertService.errorApplication();
+        this.spinner.hide();
+      }
+    });
+  }
+
   deletelWeekDetail(detail_id: any) {
-    Swal.fire({
-      title: "Estas seguro de realizar esta acción?", icon: "question", showCancelButton: true,
-      confirmButtonText: "Eliminar", confirmButtonColor: 'rgb(220, 53, 69)', cancelButtonText: "Cancelar",
-      cancelButtonColor: 'rgb(108, 117, 125)', reverseButtons: true
-    }).then(result => {
-      if (result.isConfirmed) {
-        this.spinner.show();
-        this.weekDetailsService.deleteWeekDetail(detail_id).subscribe({
-          next: result => {
-            if (result.status) {
-              Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
-              setTimeout(() => this.getInformationWeek(this.week_id), 1000);
-            } else {
-              let html = '';
-              if (result.messages.length !== 0) {
-                result.messages.forEach((message: any) => {
-                  html += `<p> - ${message}</p>`
-                });
-              }
-              Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
-            }
-            this.spinner.hide();
-          },
-          error: e => {
-            Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
-            this.spinner.hide();
-          }
-        });
+    this.spinner.show();
+    this.weekDetailsService.deleteWeekDetail(detail_id).subscribe({
+      next: result => {
+        if (result.status) {
+          this.alertService.success(result.alert);
+          setTimeout(() => this.getInformationWeek(this.week_id), 1000);
+        } else {
+          this.alertService.error(result.alert, result.messages);
+        }
+        this.spinner.hide();
+      },
+      error: e => {
+        this.alertService.errorApplication();
+        this.spinner.hide();
       }
     });
   }
@@ -181,39 +194,6 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     });
     updateWeek.afterClosed().subscribe(response => {
       if (response) this.getInformationWeek(this.week_id);
-    });
-  }
-
-  deletelWeekDetailCredit(detail_id: any) {
-    Swal.fire({
-      title: "Estas seguro de realizar esta acción?", icon: "question", showCancelButton: true,
-      confirmButtonText: "Eliminar", confirmButtonColor: 'rgb(220, 53, 69)', cancelButtonText: "Cancelar",
-      cancelButtonColor: 'rgb(108, 117, 125)', reverseButtons: true
-    }).then(result => {
-      if (result.isConfirmed) {
-        this.spinner.show();
-        this.creditDetailService.deleteCreditDetail(detail_id).subscribe({
-          next: result => {
-            if (result.status) {
-              Swal.fire({ icon: "success", title: result.alert, showConfirmButton: false, timer: 1500 });
-              setTimeout(() => this.getInformationWeek(this.week_id), 1000);
-            } else {
-              let html = '';
-              if (result.messages.length !== 0) {
-                result.messages.forEach((message: any) => {
-                  html += `<p> - ${message}</p>`
-                });
-              }
-              Swal.fire({ icon: "error", title: result.alert, html: html, confirmButtonColor: 'red' });
-            }
-            this.spinner.hide();
-          },
-          error: e => {
-            Swal.fire({ icon: "error", title: 'Se produjo un error contacta al administrador', showConfirmButton: false, timer: 1500 });
-            this.spinner.hide();
-          }
-        });
-      }
     });
   }
 
