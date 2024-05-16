@@ -5,6 +5,7 @@
     <mat-divider class="w-100 mb-3"></mat-divider>
 
     <div class="row align-items-start">
+
         <div class="col">
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" (input)="filterProducts($event)">
@@ -15,13 +16,16 @@
         <div class="col d-flex justify-content-end">
             <button class="btn btn-success align-self-end d-flex justify-content-center align-items-center" (click)="updateProduct()"><mat-icon class="mx-1">library_add</mat-icon>Producto</button>
         </div>
+
     </div>
 
     <div class="row flex-wrap justify-content-center align-items-center">
 
         @for(product of products; track product.product_id){
         <div ngfor class="card m-4 shadow" style="width: 18rem;">
+
             <img [src]="product.product_img" class="card-img-top shadow" [alt]="product.product_name">
+
             <div class="card-body">
                 <h5 class="card-title fw-bolder w-100 text-center">{{ product.product_name }}</h5>
                 <div class="d-flex justify-content-between align-items-center w-100 flex-wrap">
@@ -37,6 +41,7 @@
                     <button (click)="deleteProductQuestion(product)" class="btn btn-danger m-1"><mat-icon>delete</mat-icon></button>
                 </div>
             </div>
+
         </div>
         }
 

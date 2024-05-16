@@ -9,13 +9,13 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { WeeksService } from '../../../services/weeks.service';
-import { AlertService } from '../../../services/alert.service'; 
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-create-week',
   standalone: true,
   imports: [ReactiveFormsModule, MatIconModule, MatDividerModule, MatDividerModule, MatDatepickerModule, ReactiveFormsModule, MatInputModule, MatFormFieldModule, MatNativeDateModule],
-  templateUrl: './create-week.component.html' 
+  templateUrl: './create-week.component.html'
 })
 export class CreateWeekComponent implements OnInit, OnDestroy {
 
@@ -26,22 +26,23 @@ export class CreateWeekComponent implements OnInit, OnDestroy {
   });
 
   title: string = 'NUEVA SEMANA';
-  section = true;
   today!: string;
+
+  section = true;
 
   constructor(private weeksService: WeeksService,
     private alertService: AlertService,
-    public dialogref: MatDialogRef<CreateWeekComponent>,
+    private dialogref: MatDialogRef<CreateWeekComponent>,
     private spinner: NgxSpinnerService,
-    @Inject(MAT_DIALOG_DATA) private data: any,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) private data: any) { }
 
   ngOnInit(): void {
     const today = new Date();
     if (this.data) {
-      this.week.patchValue(this.data);
       this.section = false;
       this.title = 'MODIFICAR SEMANA';
+      this.week.patchValue(this.data);
     } else {
       this.week.patchValue({ week_date: today.toISOString().substring(0, 10) });
       today.setDate(today.getDate() - 1);

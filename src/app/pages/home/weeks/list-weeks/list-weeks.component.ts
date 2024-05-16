@@ -28,9 +28,9 @@ export default class ListWeeksComponent implements OnInit, AfterViewInit, OnDest
 
   getAllWeekSubscription!: Subscription;
 
-  constructor(private spinner: NgxSpinnerService,
-    private alertService: AlertService,
+  constructor(private alertService: AlertService,
     private weeksService: WeeksService,
+    private spinner: NgxSpinnerService,
     private dialog: MatDialog,
     private router: Router) { }
 

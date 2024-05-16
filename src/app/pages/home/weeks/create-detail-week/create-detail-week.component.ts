@@ -29,7 +29,7 @@ export class CreateDetailWeekComponent implements OnInit, OnDestroy {
 
   title: string = 'NUEVO DETALLE';
   date: string = new Date(this.data.date).toISOString().substring(0, 10);
-  
+
   section = true;
 
   constructor(private weekDetailsService: WeekDetailsService,
@@ -102,9 +102,7 @@ export class CreateDetailWeekComponent implements OnInit, OnDestroy {
       height: 'auto', maxHeight: '95vh', width: '40%', minWidth: '350px', data: { products_id: this.data.products_id }
     });
     select.afterClosed().subscribe(response => {
-      if (response) {
-        this.detail.patchValue({ product_id: response.product_id, product_name: response.product_name });
-      }
+      if (response) this.detail.patchValue({ product_id: response.product_id, product_name: response.product_name });
     });
   }
 

@@ -11,16 +11,14 @@ import { TableComponent } from '../../components/table/table.component';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { Subscription } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import Swal from 'sweetalert2';
 import { AlertService } from '../../../services/alert.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-details-week',
   standalone: true,
   imports: [MatDividerModule, TableComponent, DatePipe, UpperCasePipe, DecimalPipe, MatIconModule, CurrencyPipe],
-  templateUrl: './details-week.component.html',
-  styleUrl: './details-week.component.css'
+  templateUrl: './details-week.component.html'
 })
 export default class DetailsWeekComponent implements OnInit, OnDestroy {
 
@@ -36,7 +34,7 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private spinner: NgxSpinnerService,
     private router: ActivatedRoute,
-    public dialog: MatDialog) { }
+    private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.getInformationWeek(this.week_id);
@@ -113,6 +111,18 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
     });
   }
 
+  updateWeek(): void {
+    const week_id = this.week_info.week_id;
+    const week_date = this.week_info.week_date;
+    const week_alias = this.week_info.week_alias;
+    const updateWeek = this.dialog.open(CreateWeekComponent, {
+      height: 'auto', maxHeight: '95vh', width: 'auto', minWidth: '350px', data: { week_id, week_date, week_alias, section: false }
+    });
+    updateWeek.afterClosed().subscribe(response => {
+      if (response) this.getInformationWeek(this.week_id);
+    });
+  }
+
   updateCreditDetail(detail: any): void {
     const date = this.week_info.week_date;
     const week = this.week_info.week_id;
@@ -182,18 +192,6 @@ export default class DetailsWeekComponent implements OnInit, OnDestroy {
         this.alertService.errorApplication();
         this.spinner.hide();
       }
-    });
-  }
-
-  updateWeek(): void {
-    const week_id = this.week_info.week_id;
-    const week_date = this.week_info.week_date;
-    const week_alias = this.week_info.week_alias;
-    const updateWeek = this.dialog.open(CreateWeekComponent, {
-      height: 'auto', maxHeight: '95vh', width: 'auto', minWidth: '350px', data: { week_id, week_date, week_alias, section: false }
-    });
-    updateWeek.afterClosed().subscribe(response => {
-      if (response) this.getInformationWeek(this.week_id);
     });
   }
 

@@ -6,7 +6,32 @@ import { Injectable } from '@angular/core';
 })
 export class UserDataService {
 
-  constructor(private localStorageService: LocalStorageService) { }
+  private email: any;
+  private user: any;
+  private rol: any;
+
+
+  constructor(private localStorageService: LocalStorageService) {
+    this.uploadDataLocalStorage();
+  }
+
+  uploadDataLocalStorage() {
+    try {
+      this.email = Number(this.localStorageService.decrypt(String(localStorage.getItem('e'))));
+    } catch (error) {
+      this.email = -1;
+    }
+    try {
+      this.rol = Number(this.localStorageService.decrypt(String(localStorage.getItem('r'))));
+    } catch (error) {
+      this.rol = -1;
+    }
+    try {
+      this.user = this.localStorageService.decrypt(String(localStorage.getItem('u')));
+    } catch (error) {
+      this.user = -1;
+    }
+  }
 
   saveEmail(id: string) {
     localStorage.setItem('e', this.localStorageService.encrypt(id));
@@ -21,27 +46,15 @@ export class UserDataService {
   }
 
   getEmail() {
-    try {
-      return Number(this.localStorageService.decrypt(String(localStorage.getItem('e'))));
-    } catch (error) {
-      return -1;
-    }
+    return this.email;
   }
 
   getRol() {
-    try {
-      return Number(this.localStorageService.decrypt(String(localStorage.getItem('r'))));
-    } catch (error) {
-      return -1;
-    }
+    return this.rol;
   }
 
   getUser() {
-    try {
-      return this.localStorageService.decrypt(String(localStorage.getItem('u')));
-    } catch (error) {
-      return -1;
-    }
+    return this.user;
   }
 
 }
