@@ -87,7 +87,7 @@ export class CreateUpdateCreditDetailComponent implements OnInit, OnDestroy {
       next: result => {
         if (result.status) {
           this.alertService.success(result.alert);
-          setTimeout(() => this.close(true), 1000);
+          setTimeout(() => this.close(result.data), 1000);
         } else {
           this.alertService.error(result.alert, result.messages);
         }

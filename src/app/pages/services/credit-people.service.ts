@@ -7,10 +7,12 @@ import { Observable } from 'rxjs';
 })
 export class CreditPeopleService {
 
+  detaisPerson: any = null;
+
   constructor(private headers: HeaderService) { }
 
   getAllPeople(): Observable<any> {
-    return this.headers.http.get(`${this.headers.url}credit-people/AllPeople`, this.headers.httpOptions);
+    return this.headers.http.get(`${this.headers.url}credit-people/AllPeopleWithCreditDetail`, this.headers.httpOptions);
   }
 
   getAllOnlyPeople(): Observable<any> {

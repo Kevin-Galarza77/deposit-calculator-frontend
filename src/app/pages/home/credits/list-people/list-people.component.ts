@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CreateUpdatePeopleComponent } from '../create-update-people/create-update-people.component';
 import { DataTableDirective, DataTablesModule } from 'angular-datatables';
+import { CreateUpdatePeopleComponent } from '../create-update-people/create-update-people.component';
 import { Subject, Subscription } from 'rxjs';
 import { CreditPeopleService } from '../../../services/credit-people.service';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -90,9 +90,13 @@ export default class ListPeopleComponent implements OnInit, AfterViewInit, OnDes
     });
   }
 
-  saveToDetails(creadits: any) {
-    if (creadits.credit_detail.length === 0) this.alertService.error('No existen fiados en esta entidad', []);
-    else this.router.navigateByUrl('/home/credits/' + creadits.credit_people_id);
+  saveToDetails(credits: any) {
+    if (credits.credit_detail.length === 0) {
+      this.alertService.error('No existen créditos en esta entidad', []);
+    } else {
+      this.creditPeopleService.detaisPerson = credits;
+      this.router.navigateByUrl('/home/credits/' + credits.credit_people_id);
+    }
   }
 
   rerender(): void {
